@@ -601,3 +601,8 @@ dt a {
 .footnote a {
   color: #888;
 }
+
+.fb-like {
+  float: left;
+  padding: 0px 8px 8px 0px;
+}
