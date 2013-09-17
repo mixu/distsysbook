@@ -553,3 +553,8 @@ dt a {
   float: left;
   padding: 0px 8px 8px 0px;
 }
+
+.inline {
+  margin: 0;
+  display: inline;
+}

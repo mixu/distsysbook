@@ -57,7 +57,8 @@ BookGen.processFiles = function(config, files) {
   fs.writeFile(config.output+'single-page.html',
     header.replace('assets/style.css', 'assets/printable.css')
       .replace(/{{prev}}/g, 'index.html')
-      .replace(/{{next}}/g, 'index.html') +
+      .replace(/{{next}}/g, 'index.html')
+      .replace('<!-- index-insert -->', fs.readFileSync('./layouts/default/single-insert.html').toString()) +
           // change links to single page format
     full.replace('href="index.html"', 'href="#index"')
         .replace('href="intro.html"', 'href="#intro"')
@@ -117,7 +118,7 @@ BookGen.writeFile = function(infile, index, config) {
 
   fs.writeFileSync(config.output + outName + '.html',
     header
-      .replace(/{{title}}/g, config.titles[outName +'.md' ] || 'Distributed systems: algorithms and artefacts')
+      .replace(/{{title}}/g, config.titles[outName +'.md' ] || 'Distributed systems for fun and profit')
       .replace(/{{prev}}/g, (links[outName] ? links[outName].prev : ''))
       .replace(/{{next}}/g, (links[outName] ? links[outName].next : ''))
       // special download header
