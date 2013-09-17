@@ -1,4 +1,15 @@
     <div class="header nav">
+      <div id="fb-root"></div>
+      <script>(function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1&appId=233100006711385";
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));</script>
+
+      <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
       <p>
        <a href="https://github.com/mixu/distsysbook"><img src="./images/git-icon.png"> git</a>,
        <a href="single-page.html"><img src="./images/format_html.png" class="inline"> Single page HTML</a>,
@@ -6,6 +17,18 @@
        <a href="http://www.printfriendly.com/print/v2?url=http://book.mixu.net/distsys/ebook.html"><img src="./images/format_pdf.png" class="inline"> PDF</a>,
        <a href="mixu-distributed-systems-book.epub"><img src="./images/format_epub.png" class="inline"> .epub</a>,
        <a href="ebook.html"><img src="./images/format_html.png" class="inline"> HTML for printing</a>.
+      </p>
+    </div>
+    <div class="clear">
+      <br>
+    </div>
+
+    <div class="header nav">
+      <p>
+      <a href="https://twitter.com/share" class="twitter-share-button" data-text="Distributed systems for fun and profit" data-via="mikitotakada">Tweet</a>
+
+      <div class="fb-like" data-href="http://book.mixu.net/distsys/" data-width="450" data-layout="button_count" data-show-faces="false" data-send="false"></div>
+
       </p>
     </div>
 
