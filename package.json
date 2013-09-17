@@ -1,0 +1,19 @@
+{
+  "name": "book",
+  "description": "Book about distributed systems",
+  "version": "1.0.0",
+  "author": {
+    "name": "Mikito Takada",
+    "email": "mixu@mixu.net",
+    "url": "http://blog.mixu.net/"
+    },
+  "main": "bookgen/generate.js",
+  "dependencies": {
+    "marked": "~0.2.5"
+  },
+  "private": "true",
+  "scripts": {
+    "start": "node bookgen/generate.js"
+  }
+}
+
