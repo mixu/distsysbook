@@ -40,7 +40,9 @@ BookGen.processFiles = function(config, files) {
   }
 
   files = files.filter(function(name) {
-    return !fs.statSync(name).isDirectory();
+    if(fs.exists(name)) {
+     return !fs.statSync(name).isDirectory();
+    }
   });
   // concatenate the files
   console.log(files);
