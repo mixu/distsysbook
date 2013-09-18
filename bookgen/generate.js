@@ -17,7 +17,7 @@ BookGen.generate = function(config) {
       if (err) throw err;
       var basename = path.basename(config.input.files);
       BookGen.processFiles(config, files.map(function(relname) {
-        return path.normalize( basename + relname);
+        return path.normalize( basename + '/' + relname);
       }));
     });
   } else {
@@ -40,9 +40,7 @@ BookGen.processFiles = function(config, files) {
   }
 
   files = files.filter(function(name) {
-    if(fs.exists(name)) {
-     return !fs.statSync(name).isDirectory();
-    }
+    return !fs.statSync(name).isDirectory();
   });
   // concatenate the files
   console.log(files);
