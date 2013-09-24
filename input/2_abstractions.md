@@ -176,7 +176,7 @@ Assuming that a partition occurs, the theorem reduces to a binary choice between
 ![Based on http://blog.mikiobraun.de/2013/03/misconceptions-about-cap-theorem.html](images/CAP_choice.png)
 
 
-I think there are three conclusions that should be drawn from the CAP theorem:
+I think there are four conclusions that should be drawn from the CAP theorem:
 
 First, that *many system designs used in early distributed relational database systems did not take into account partition tolerance* (e.g. they were CA designs). Partition tolerance is an important property for modern systems, since network partitions become much more likely if the system is geographically distributed (as many large systems are).
 
