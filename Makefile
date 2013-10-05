@@ -4,6 +4,7 @@ build:
 ebook:
 	@echo "\n... generating $@"
 	ebook-convert output/ebook.html output/mixu-distributed-systems-book.mobi \
+		--cover ./output/images/dist-sys-cover.png \
 		--max-levels 0 \
 		--chapter "//*[@class = 'chapter']" \
 		--chapter-mark=none \
@@ -18,6 +19,7 @@ ebook:
 		--output-profile kindle
 	@echo "\n... generating $@"
 	ebook-convert output/ebook.html output/mixu-distributed-systems-book.epub \
+		--cover ./output/images/dist-sys-cover.png \
 		--max-levels 0 \
 		--chapter "//*[@class = 'chapter']" \
 		--chapter-mark=none \

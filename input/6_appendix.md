@@ -4,7 +4,7 @@ If you've made it this far, thank you.
 
 If you liked the book, follow me on [Github](https://github.com/mixu/) (or [Twitter](http://twitter.com/mikitotakada)). I love seeing that I've had some kind of positive impact. "Create more value than you capture" and all that.
 
-I'd like to thank @logpath, @alexras, @globalcitizen, @graue and @frankshearar for their comments and corrections - of course, any mistakes and omissions that remain are my fault!
+Many many thanks to: logpath, alexras, globalcitizen, graue, frankshearar, roryokane, jpfuentes2 and eeror for their help! Of course, any mistakes and omissions that remain are my fault!
 
 It's worth noting that my chapter on eventual consistency is fairly Berkeley-centric; I'd like to change that. I've also skipped one prominent use case for time: consistent snapshots. There are also a couple of topics which I should expand on: namely, an explicit discussion of safety and liveness properties and a more detailed discussion of consistent hashing. However, I'm off to [Strange Loop 2013](https://thestrangeloop.com/), so whatever.
 

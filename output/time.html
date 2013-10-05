@@ -184,7 +184,7 @@ LamportClock.prototype.merge = function(other) {
 <p>Imagine a system that after an initial period divides into two independent subsystems which never communicate with each other.</p>
 <p>For all events in each independent system, if a happened before b, then <code>ts(a) &lt; ts(b)</code>; but if you take two events from the different independent systems (e.g. events that are not causally related) then you cannot say anything meaningful about their relative order.  While each part of the system has assigned timestamps to events, those timestamps have no relation to each other. Two events may appear to be ordered even though they are unrelated.</p>
 <p>However - and this is still a useful property - from the perspective of a single machine, any message sent with <code>ts(a)</code> will receive a response with <code>ts(b)</code> which is <code>&gt; ts(a)</code>.</p>
-<p><em>A vector clock</em> is an extension of Lamport clock, which maintains an array <code>[ t1, t2, ... ]</code> of N logical clocks - one per each node. Rather than incrementing a common counter, each node increment&#39;s its own logical clock in the vector by one on each internal event. Hence the update rules are:</p>
+<p><em>A vector clock</em> is an extension of Lamport clock, which maintains an array <code>[ t1, t2, ... ]</code> of N logical clocks - one per each node. Rather than incrementing a common counter, each node increments its own logical clock in the vector by one on each internal event. Hence the update rules are:</p>
 <ul class="list">
 <li>Whenever a process does work, increment the logical clock value of the node in the vector</li>
 <li>Whenever a process sends a message, include the full vector of logical clocks</li>
@@ -284,7 +284,7 @@ VectorClock.prototype.merge = function(other) {
 </ul>
 <h3>Failure detection</h3>
 <ul class="list">
-<li><a href="http://scholar.google.com/scholar??q=Unreliable+Failure+Detectors+for+Reliable+Distributed+Systems">Unreliable failure detectors and reliable distributed systems</a> - Chandra and Toueg</li>
+<li><a href="http://scholar.google.com/scholar?q=Unreliable+Failure+Detectors+for+Reliable+Distributed+Systems">Unreliable failure detectors and reliable distributed systems</a> - Chandra and Toueg</li>
 <li><a href="http://www.cs.cornell.edu/people/egs/sqrt-s/doc/TR2006-2025.pdf">Latency- and Bandwidth-Minimizing Optimal Failure Detectors</a> - So &amp; Sirer, 2007</li>
 <li><a href="http://scholar.google.com/scholar?q=The+failure+detector+abstraction">The failure detector abstraction</a>, Freiling, Guerraoui &amp; Kuznetsov, 2011</li>
 </ul>

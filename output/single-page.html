@@ -54,7 +54,7 @@
        <a href="mixu-distributed-systems-book.mobi"><img src="./images/format_mobi.png" class="inline"> Kindle .mobi</a>,
        <a href="http://www.printfriendly.com/print/v2?url=http://book.mixu.net/distsys/ebook.html"><img src="./images/format_pdf.png" class="inline"> PDF</a>,
        <a href="mixu-distributed-systems-book.epub"><img src="./images/format_epub.png" class="inline"> .epub</a>,
-       <a href="ebook.html"><img src="./images/format_html.png" class="inline"> HTML for printing</a>.
+       <a href="ebook.html"><img src="./images/format_html.png" class="inline"> HTML for printing</a>, <a href="./images/dist-sys-cover.png"><img src="./images/image.png" class="inline"> book cover</a>.
       </p>
     </div>
     <div class="clear">
@@ -631,7 +631,7 @@ LamportClock.prototype.merge = function(other) {
 <p>Imagine a system that after an initial period divides into two independent subsystems which never communicate with each other.</p>
 <p>For all events in each independent system, if a happened before b, then <code>ts(a) &lt; ts(b)</code>; but if you take two events from the different independent systems (e.g. events that are not causally related) then you cannot say anything meaningful about their relative order.  While each part of the system has assigned timestamps to events, those timestamps have no relation to each other. Two events may appear to be ordered even though they are unrelated.</p>
 <p>However - and this is still a useful property - from the perspective of a single machine, any message sent with <code>ts(a)</code> will receive a response with <code>ts(b)</code> which is <code>&gt; ts(a)</code>.</p>
-<p><em>A vector clock</em> is an extension of Lamport clock, which maintains an array <code>[ t1, t2, ... ]</code> of N logical clocks - one per each node. Rather than incrementing a common counter, each node increment&#39;s its own logical clock in the vector by one on each internal event. Hence the update rules are:</p>
+<p><em>A vector clock</em> is an extension of Lamport clock, which maintains an array <code>[ t1, t2, ... ]</code> of N logical clocks - one per each node. Rather than incrementing a common counter, each node increments its own logical clock in the vector by one on each internal event. Hence the update rules are:</p>
 <ul class="list">
 <li>Whenever a process does work, increment the logical clock value of the node in the vector</li>
 <li>Whenever a process sends a message, include the full vector of logical clocks</li>
@@ -731,7 +731,7 @@ VectorClock.prototype.merge = function(other) {
 </ul>
 <h3>Failure detection</h3>
 <ul class="list">
-<li><a href="http://scholar.google.com/scholar??q=Unreliable+Failure+Detectors+for+Reliable+Distributed+Systems">Unreliable failure detectors and reliable distributed systems</a> - Chandra and Toueg</li>
+<li><a href="http://scholar.google.com/scholar?q=Unreliable+Failure+Detectors+for+Reliable+Distributed+Systems">Unreliable failure detectors and reliable distributed systems</a> - Chandra and Toueg</li>
 <li><a href="http://www.cs.cornell.edu/people/egs/sqrt-s/doc/TR2006-2025.pdf">Latency- and Bandwidth-Minimizing Optimal Failure Detectors</a> - So &amp; Sirer, 2007</li>
 <li><a href="http://scholar.google.com/scholar?q=The+failure+detector+abstraction">The failure detector abstraction</a>, Freiling, Guerraoui &amp; Kuznetsov, 2011</li>
 </ul>
@@ -935,7 +935,7 @@ VectorClock.prototype.merge = function(other) {
 <p>Paxos is named after the Greek island of Paxos, and was originally presented by Leslie Lamport in a paper called &quot;The Part-Time Parliament&quot; in 1998. It is often considered to be difficult to implement, and there have been a series of papers from companies with considerable distributed systems expertise explaining further practical details (see the further reading). You might want to read Lamport&#39;s commentary on this issue <a href="http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html#lamport-paxos">here</a> and <a href="http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html#paxos-simple">here</a>.</p>
 <p>The issues mostly relate to the fact that Paxos is described in terms of a single round of consensus decision making, but an actual working implementation usually wants to run multiple rounds of consensus efficiently. This has led to the development of many <a href="http://en.wikipedia.org/wiki/Paxos_algorithm">extensions on the core protocol</a> that anyone interested in building a Paxos-based system still needs to digest. Furthermore, there are additional practical challenges such as how to facilitate cluster membership change.</p>
 <p><em>ZAB</em>. ZAB - the Zookeeper Atomic Broadcast protocol is used in Apache Zookeeper. Zookeeper is a system which provides coordination primitives for distributed systems, and is used by many Hadoop-centric distributed systems for coordination (e.g. <a href="http://hbase.apache.org/">HBase</a>, <a href="http://storm-project.net/">Storm</a>, <a href="http://kafka.apache.org/">Kafka</a>). Zookeeper is basically the open source community&#39;s version of Chubby. Technically speaking atomic broadcast is a problem different from pure consensus, but it still falls under the category of partition tolerant algorithms that ensure strong consistency.</p>
-<p><em>Raft</em>. Raft is a recent (2013) addition to this family of algorithms. It is designed to be easier to teach than Paxos, while providing the same guarantees. In particular, the different parts of the algorithm are more clearly separated and the paper also describes a mechanism for cluster membership change.</p>
+<p><em>Raft</em>. Raft is a recent (2013) addition to this family of algorithms. It is designed to be easier to teach than Paxos, while providing the same guarantees. In particular, the different parts of the algorithm are more clearly separated and the paper also describes a mechanism for cluster membership change. It has recently seen adoption in <a href="https://github.com/coreos/etcd">etcd</a> inspired by ZooKeeper.</p>
 <h2>Replication methods with strong consistency</h2>
 <p>In this chapter, we took a look at replication methods that enforce strong consistency. Starting with a contrast between synchronous work and asynchronous work, we worked our way up to algorithms that are tolerant of increasingly complex failures. Here are some of the key characteristics of each of the algorithms:</p>
 <h4>Primary/Backup</h4>
@@ -981,6 +981,7 @@ VectorClock.prototype.merge = function(other) {
 <h4>Raft and ZAB</h4>
 <ul class="list">
 <li><a href="https://ramcloud.stanford.edu/wiki/download/attachments/11370504/raft.pdf">In Search of an Understandable Consensus Algorithm</a>, Diego Ongaro, John Ousterhout, 2013</li>
+<li><a href="http://www.youtube.com/watch?v=YbZ3zDzDnrw">Raft Lecture - User Study</a></li>
 <li><a href="http://research.yahoo.com/pub/3274">A simple totally ordered broadcast protocol</a> - Junqueira, Reed</li>
 <li><a href="http://research.yahoo.com/pub/3514">ZooKeeper Atomic Broadcast</a></li>
 </ul>
@@ -1309,7 +1310,7 @@ or P(false)</pre>
 <div style="page-break-after: always;"></div><a name="appendix"></a><h1>6. Further reading and appendix</h1>
 <p>If you&#39;ve made it this far, thank you.</p>
 <p>If you liked the book, follow me on <a href="https://github.com/mixu/">Github</a> (or <a href="http://twitter.com/mikitotakada">Twitter</a>). I love seeing that I&#39;ve had some kind of positive impact. &quot;Create more value than you capture&quot; and all that.</p>
-<p>I&#39;d like to thank @logpath, @alexras, @globalcitizen, @graue and @frankshearar for their comments and corrections - of course, any mistakes and omissions that remain are my fault!</p>
+<p>Many many thanks to: logpath, alexras, globalcitizen, graue, frankshearar, roryokane, jpfuentes2 and eeror for their help! Of course, any mistakes and omissions that remain are my fault!</p>
 <p>It&#39;s worth noting that my chapter on eventual consistency is fairly Berkeley-centric; I&#39;d like to change that. I&#39;ve also skipped one prominent use case for time: consistent snapshots. There are also a couple of topics which I should expand on: namely, an explicit discussion of safety and liveness properties and a more detailed discussion of consistent hashing. However, I&#39;m off to <a href="https://thestrangeloop.com/">Strange Loop 2013</a>, so whatever.</p>
 <p>If this book had a chapter 6, it would probably be about the ways in which one can make use of and deal with large amounts of data. It seems that the most common type of &quot;big data&quot; computation is one in which <a href="http://en.wikipedia.org/wiki/SPMD">a large dataset is passed through a single simple program</a>. I&#39;m not sure what the subsequent chapters would be (perhaps high performance computing, given that the current focus has been on feasibility), but I&#39;ll probably know in a couple of years.</p>
 <h2>Books about distributed systems</h2>
