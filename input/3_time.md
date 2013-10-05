@@ -192,7 +192,7 @@ For all events in each independent system, if a happened before b, then `ts(a) <
 
 However - and this is still a useful property - from the perspective of a single machine, any message sent with `ts(a)` will receive a response with `ts(b)` which is `> ts(a)`.
 
-*A vector clock* is an extension of Lamport clock, which maintains an array `[ t1, t2, ... ]` of N logical clocks - one per each node. Rather than incrementing a common counter, each node increment's its own logical clock in the vector by one on each internal event. Hence the update rules are:
+*A vector clock* is an extension of Lamport clock, which maintains an array `[ t1, t2, ... ]` of N logical clocks - one per each node. Rather than incrementing a common counter, each node increments its own logical clock in the vector by one on each internal event. Hence the update rules are:
 
 - Whenever a process does work, increment the logical clock value of the node in the vector
 - Whenever a process sends a message, include the full vector of logical clocks
