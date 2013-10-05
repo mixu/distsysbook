@@ -324,7 +324,7 @@ In the next two chapters we'll examine replication for fault-tolerant strongly c
 
 ### Failure detection
 
-- [Unreliable failure detectors and reliable distributed systems](http://scholar.google.com/scholar??q=Unreliable+Failure+Detectors+for+Reliable+Distributed+Systems) - Chandra and Toueg
+- [Unreliable failure detectors and reliable distributed systems](http://scholar.google.com/scholar?q=Unreliable+Failure+Detectors+for+Reliable+Distributed+Systems) - Chandra and Toueg
 - [Latency- and Bandwidth-Minimizing Optimal Failure Detectors](http://www.cs.cornell.edu/people/egs/sqrt-s/doc/TR2006-2025.pdf) - So & Sirer, 2007
 - [The failure detector abstraction](http://scholar.google.com/scholar?q=The+failure+detector+abstraction), Freiling, Guerraoui & Kuznetsov, 2011
 
