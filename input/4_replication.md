@@ -106,7 +106,7 @@ It is worth noting that systems enforcing weak consistency requirements have few
 For example:
 
 - Client-centric consistency models attempt to provide more intelligible consistency guarantees while allowing for divergence.
-- CRDTs (convergent replicated datatypes) exploit knowledge regarding the commutativity (and associativity) of specific operations on specific datatypes.
+- CRDTs (convergent and commutative replicated datatypes) exploit semilattice properties (associativity, commutativity, idempotency) of certain state and operation-based data types.
 - Confluence analysis (as in the Bloom language) uses information regarding the monotonicity of computations to maximally exploit disorder.
 - PBS (probabilistically bound staleness) uses simulation and information collected from a real world system to characterize the expected behavior of partial quorum systems.
 
