@@ -127,9 +127,9 @@
 <p>For example:</p>
 <ul class="list">
 <li>Client-centric consistency models attempt to provide more intelligible consistency guarantees while allowing for divergence.</li>
-<li>CRDTs (convergent replicated datatypes) exploit knowledge regarding the commutativity (and associativity) of specific operations on specific datatypes.</li>
+<li>CRDTs (convergent and commutative replicated datatypes) exploit semilattice properties (associativity, commutativity, idempotency) of certain state and operation-based data types.</li>
 <li>Confluence analysis (as in the Bloom language) uses information regarding the monotonicity of computations to maximally exploit disorder.</li>
-<li>PBS (probabilistically bound staleness) uses simulation and information collected from a real world system to characterize the expected behavior of partial quorum systems.</li>
+<li>PBS (probabilistically bounded staleness) uses simulation and information collected from a real world system to characterize the expected behavior of partial quorum systems.</li>
 </ul>
 <p>I&#39;ll talk about all of these a bit  further on, first; let&#39;s look at the replication algorithms that maintain single-copy consistency.</p>
 <h2>Primary/backup replication</h2>
