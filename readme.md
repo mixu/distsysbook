@@ -31,7 +31,7 @@ You need to install Calibre first for the HTML to epub/mobi conversion.
 
 # Thanks
 
-Many many thanks to: logpath, alexras, globalcitizen, graue, frankshearar, roryokane, jpfuentes2, cmeiklejohn, stevenproctor and eos2102 for their help!
+Many many thanks to: logpath, alexras, globalcitizen, graue, frankshearar, roryokane, jpfuentes2, cmeiklejohn, stevenproctor, eos2102 and steveloughran for their help!
 
 # Licence
 

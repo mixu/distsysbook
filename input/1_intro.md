@@ -15,11 +15,11 @@ However, few people have infinite resources. Hence, they have to find the right 
 
 It is a current reality that the best value is in mid-range, commodity hardware - as long as the maintenance costs can be kept down through fault-tolerant software.
 
-Computations primarily benefit from high-end hardware to the extent to which they can replace slow network accesses with internal memory accesses. In tasks that require only small amounts of communication between nodes, the performance advantage of high-end hardware is limited.
+Computations primarily benefit from high-end hardware to the extent to which they can replace slow network accesses with internal memory accesses. The performance advantage of high-end hardware is limited in tasks that require large amounts of communication between nodes.
 
 ![cost-efficiency](images/barroso_holzle.png)
 
-Even in tasks that require high amounts of communication, the performance gap between high-end and commodity hardware decreases with cluster size assuming a uniform memory access pattern across all nodes (e.g. the figure above from [Barroso, Clidaras & Hölzle](http://www.morganclaypool.com/doi/abs/10.2200/S00516ED2V01Y201306CAC024)).
+As the figure above from [Barroso, Clidaras & Hölzle](http://www.morganclaypool.com/doi/abs/10.2200/S00516ED2V01Y201306CAC024) shows, the performance gap between high-end and commodity hardware decreases with cluster size assuming a uniform memory access pattern across all nodes.
 
 Ideally, adding a new machine would increase the performance and capacity of the system linearly. But of course this is not possible, because there is some overhead that arises due to having separate computers. Data needs to be copied around, computation tasks have to be coordinated and so on. This is why it's worthwhile to study distributed algorithms - they provide efficient solutions to specific problems, as well as guidance about what is possible, what the minimum cost of a correct implementation is, and what is impossible.
 
