@@ -246,7 +246,7 @@ Replication is also the source of many of the problems, since there are now inde
 
 The choice of a consistency model is crucial: a good consistency model provides clean semantics for programmers (in other words, the properties it guarantees are easy to reason about) and meets business/design goals such as high availability or strong consistency.
 
-Only one consistency model for replication - strong consistency - allows you to program as-if the underlying data was not replicated. Other consistency models expose some internals of the replication are visible to the programmer. However, weaker consistency models can provide lower latency and higher availability - and are not necessarily harder to understand, just different.
+Only one consistency model for replication - strong consistency - allows you to program as-if the underlying data was not replicated. Other consistency models expose some internals of the replication to the programmer. However, weaker consistency models can provide lower latency and higher availability - and are not necessarily harder to understand, just different.
 
 ---
 
