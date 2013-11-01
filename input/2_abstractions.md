@@ -74,7 +74,7 @@ Another alternative is to assume that nodes can fail by misbehaving in any arbit
 
 ### Communication links in our system model
 
-Communication links connect individual nodes to each other, and allow messages to be sent in either direction. Many books which discuss distributed algorithms assume is that there are individual links between each pair of nodes, that the links provide FIFO (first in, first out) order for messages, that they can only deliver messages that were sent, and that sent messages can be lost.
+Communication links connect individual nodes to each other, and allow messages to be sent in either direction. Many books that discuss distributed algorithms assume that there are individual links between each pair of nodes, that the links provide FIFO (first in, first out) order for messages, that they can only deliver messages that were sent, and that sent messages can be lost.
 
 Some algorithms assume that the network is reliable: that messages are never lost and never delayed indefinitely. This may be a reasonable assumption for some real-world settings, but in general it is preferable to consider the network to be unreliable and subject to message loss and delays.
 
