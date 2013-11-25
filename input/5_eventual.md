@@ -39,7 +39,7 @@ The CALM (consistency as logical monotonicity) conjecture is an alternative expr
 
 ## Reconciling different operation orders
 
-What does a system that does not enforce single-copy consistency look like?  Let's try to make this more concrete by looking a few examples.
+What does a system that does not enforce single-copy consistency look like?  Let's try to make this more concrete by looking at a few examples.
 
 Perhaps the most obvious characteristic of systems that do not enforce single-copy consistency is that they allow replicas to diverge from each other. This means that there is no strictly defined pattern of communication: replicas can be separated from each other and yet continue to be available and accept writes.
 
@@ -212,7 +212,7 @@ Gossip is a probabilistic technique for synchronizing replicas. The pattern of c
 
 Gossip is scalable, and has no single point of failure, but can only provide probabilistic guarantees.
 
-In order to make the information exchange during replica synchronization efficient, Dynamo uses a technique called Merkle trees, which I will not cover in detail. The key idea is that a data store can be hashed at multiple different level of granularity: a hash representing the whole content, half the keys, a quarter of the keys and so on.
+In order to make the information exchange during replica synchronization efficient, Dynamo uses a technique called Merkle trees, which I will not cover in detail. The key idea is that a data store can be hashed at multiple different levels of granularity: a hash representing the whole content, half the keys, a quarter of the keys and so on.
 
 By maintaining this fairly granular hashing, nodes can compare their data store content much more efficiently than a naive technique. Once the nodes have identified which keys have different values, they exchange the necessary information to bring the replicas up to date.
 
@@ -368,7 +368,7 @@ Within the artificial intelligence community, non-monotonic logics are associate
 
 Monotonicity concerns the relationship between premises (or facts about the world) and conclusions (or assertions about the world). Within a monotonic logic, we know that our results are retraction-free: [monotone](http://en.wikipedia.org/wiki/Monotonicity_of_entailment) computations do not need to be recomputed or coordinated; the answer gets more accurate over time. Once we know that Tweety is a bird (and that we're reasoning using monotonic logic), we can safely conclude that Tweety can fly and that nothing we learn can invalidate that conclusion.
 
-While any computation that produces a human-facing result can be interpreted as an assertion about the world (e.g. the value of "foo" is "bar"), determining whether a computation in a von Neumann -machine based programming model is monotonic difficult because it is not exactly clear what the relationship between facts and assertions are and whether those relationships are monotonic.
+While any computation that produces a human-facing result can be interpreted as an assertion about the world (e.g. the value of "foo" is "bar"), it is difficult to determine whether a computation in a von Neumann machine based programming model is monotonic, because it is not exactly clear what the relationship between facts and assertions are and whether those relationships are monotonic.
 
 However, there are a number of programming models for which determining monotonicity is possible. In particular, [relational algebra](http://en.wikipedia.org/wiki/Relational_algebra) (e.g. the theoretical underpinnings of SQL) and [Datalog](http://en.wikipedia.org/wiki/Datalog) provide highly expressive languages that have well-understood interpretations.
 
