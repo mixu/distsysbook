@@ -349,5 +349,5 @@ In this chapter, we took a look at replication methods that enforce strong consi
 
 - [In Search of an Understandable Consensus Algorithm](https://ramcloud.stanford.edu/wiki/download/attachments/11370504/raft.pdf), Diego Ongaro, John Ousterhout, 2013
 - [Raft Lecture - User Study](http://www.youtube.com/watch?v=YbZ3zDzDnrw)
-- [A simple totally ordered broadcast protocol](http://research.yahoo.com/pub/3274) - Junqueira, Reed
-- [ZooKeeper Atomic Broadcast](http://research.yahoo.com/pub/3514)
+- [A simple totally ordered broadcast protocol](http://labs.yahoo.com/publication/a-simple-totally-ordered-broadcast-protocol/) - Junqueira, Reed, 2008
+- [ZooKeeper Atomic Broadcast](http://labs.yahoo.com/publication/zab-high-performance-broadcast-for-primary-backup-systems/) - Reed, 2011
