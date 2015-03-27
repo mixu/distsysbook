@@ -59,7 +59,7 @@
 
     <div id="main">
       <div id="content" class="post">
-<h1>3. Time and order</h1>
+<h1 id="-chapter_number-time-and-order">3. Time and order</h1>
 <p>What is order and why is it important?</p>
 <p>What do you mean &quot;what is order&quot;?</p>
 <p>I mean, why are we so obsessed with order in the first place? Why do we care whether A happened before B? Why don&#39;t we care about some other property, like &quot;color&quot;?</p>
@@ -70,7 +70,7 @@
 <p>Order as a property has received so much attention because the easiest way to define &quot;correctness&quot; is to say &quot;it works like it would on a single machine&quot;. And that usually means that a) we run the same operations and b) that we run them in the same order - even if there are multiple machines.</p>
 <p>The nice thing about distributed systems that preserve order (as defined for a single system) is that they are generic. You don&#39;t need to care about what the operations are, because they will be executed exactly like on a single machine. This is great because you know that you can use the same system no matter what the operations are.</p>
 <p>In reality, a distributed program runs on multiple nodes; with multiple CPUs and multiple streams of operations coming in. You can still assign a total order, but it requires either accurate clocks or some form of communication. You could timestamp each operation using a completely accurate clock then use that to figure out the total order. Or you might have some kind of communication system that makes it possible to assign sequential numbers as in a total order.</p>
-<h2>Total and partial order</h2>
+<h2 id="total-and-partial-order">Total and partial order</h2>
 <p>The natural state in a distributed system is <a href="http://en.wikipedia.org/wiki/Partially_ordered_set">partial order</a>. Neither the network nor independent nodes make any guarantees about relative order; but at each node, you can observe a local order.</p>
 <p>A <a href="http://en.wikipedia.org/wiki/Total_order">total order</a> is a binary relation that defines an order for every element in some set.</p>
 <p>Two distinct elements are <strong>comparable</strong> when one of them is greater than the other. In a partially ordered set, some pairs of elements are not comparable and hence a partial order doesn&#39;t specify the exact order of every item.</p>
@@ -89,7 +89,7 @@ For some elements in a partial order, the totality property does not hold - in o
                   \  [ master (1,0,0) ]  /</pre>
 <p>The branches A and B were derived from a common ancestor, but there is no definite order between them: they represent different histories and cannot be reduced to a single linear history without additional work (merging). You could, of course, put all the commits in some arbitrary order (say, sorting them first by ancestry and then breaking ties by sorting A before B or B before A) - but that would lose information by forcing a total order where none existed.</p>
 <p>In a system consisting of one node, a total order emerges by necessity: instructions are executed and messages are processed in a specific, observable order in a single program. We&#39;ve come to rely on this total order - it makes executions of programs predictable. This order can be maintained on a distributed system, but at a cost: communication is expensive, and time synchronization is difficult and fragile.</p>
-<h1>What is time?</h1>
+<h1 id="what-is-time-">What is time?</h1>
 <p>Time is a source of order - it allows us to define the order of operations - which coincidentally also has an interpretation that people can understand (a second, a minute, a day and so on).</p>
 <p>In some sense, time is just like any other integer counter. It just happens to be important enough that most computers have a dedicated time sensor, also known as a clock. It&#39;s so important that we&#39;ve figured out how to synthesize an approximation of the same counter using some imperfect physical system (from wax candles to cesium atoms). By &quot;synthesize&quot;, I mean that we can approximate the value of the integer counter in physically distant places via some physical property without communicating it directly.</p>
 <p>Timestamps really are a shorthand value for representing the state of the world from the start of the universe to the current moment - if something occurred at a particular timestamp, then it was potentially influenced by everything that happened before it. This idea can be generalized into a causal clock that explicitly tracks causes (dependencies) rather than simply assuming that everything that preceded a timestamp was relevant. Of course, the usual assumption is that we should only worry about the state of the specific system rather than the whole world.</p>
@@ -109,7 +109,7 @@ For some elements in a partial order, the totality property does not hold - in o
 <p><em>Duration</em> - durations measured in time have some relation to the real world. Algorithms generally don&#39;t care about the absolute value of a clock or its interpretation as a date, but they might use durations to make some judgment calls. In particular, the amount of time spent waiting can provide clues about whether a system is partitioned or merely experiencing high latency.</p>
 <p>By their nature, the components of distributed systems do not behave in a predictable manner. They do not guarantee any specific order, rate of advance, or lack of delay. Each node does have some local order - as execution is (roughly) sequential - but these local orders are independent of each other.</p>
 <p>Imposing (or assuming) order is one way to reduce the space of possible executions and possible occurrences. Humans have a hard time reasoning about things when things can happen in any order - there just are too many permutations to consider.</p>
-<h2>Does time progress at the same rate everywhere?</h2>
+<h2 id="does-time-progress-at-the-same-rate-everywhere-">Does time progress at the same rate everywhere?</h2>
 <p>We all have an intuitive concept of time based on our own experience as individuals. Unfortunately, that intuitive notion of time makes it easier to picture total order rather than partial order. It&#39;s easier to picture a sequence in which things happen one after another, rather than concurrently. It is easier to reason about a single order of messages than to reason about messages arriving in different orders and with different delays.</p>
 <p>However, when implementing distributing systems we want to avoid making strong assumptions about time and order, because the stronger the assumptions, the more fragile a system is to issues with the &quot;time sensor&quot; - or the onboard clock. Furthermore, imposing an order carries a cost. The more temporal nondeterminism that we can tolerate, the more we can take advantage of distributed computation.</p>
 <p>There are three common answers to the question &quot;does time progress at the same rate everywhere?&quot;. These are:</p>
@@ -119,24 +119,24 @@ For some elements in a partial order, the totality property does not hold - in o
 <li>&quot;No clock&quot;: no!</li>
 </ul>
 <p>These correspond roughly to the three timing assumptions that I mentioned in the second chapter: the synchronous system model has a global clock, the partially synchronous model has a local clock, and in the asynchronous system model one cannot use clocks at all. Let&#39;s look at these in more detail.</p>
-<h3>Time with a &quot;global-clock&quot; assumption</h3>
+<h3 id="time-with-a-global-clock-assumption">Time with a &quot;global-clock&quot; assumption</h3>
 <p>The global clock assumption is that there is a global clock of perfect accuracy, and that everyone has access to that clock. This is the way we tend to think about time, because in human interactions small differences in time don&#39;t really matter.</p>
 <p class="img-container"><img src="images/global-clock.png" alt="Global clock"></p>
 <p>The global clock is basically a source of total order (exact order of every operation on all nodes even if those nodes have never communicated).</p>
 <p>However, this is an idealized view of the world: in reality, clock synchronization is only possible to a limited degree of accuracy. This is limited by the lack of accuracy of clocks in commodity computers, by latency if a clock synchronization protocol such as <a href="http://en.wikipedia.org/wiki/Network_Time_Protocol">NTP</a> is used and fundamentally by <a href="http://en.wikipedia.org/wiki/Time_dilation">the nature of spacetime</a>.</p>
 <p>Assuming that clocks on distributed nodes are perfectly synchronized means assuming that clocks start at the same value and never drift apart. It&#39;s a nice assumption because you can use timestamps freely to determine a global total order - bound by clock drift rather than latency - but this is a <a href="http://queue.acm.org/detail.cfm?id=1773943">nontrivial</a> operational challenge and a potential source of anomalies. There are many different scenarios where a simple failure - such as a user accidentally changing the local time on a machine, or an out-of-date machine joining a cluster, or synchronized clocks drifting at slightly different rates and so on that can cause hard-to-trace anomalies.</p>
 <p>Nevertheless, there are some real-world systems that make this assumption. Facebook&#39;s <a href="http://en.wikipedia.org/wiki/Apache_Cassandra">Cassandra</a> is an example of a system that assumes clocks are synchronized. It uses timestamps to resolve conflicts between writes - the write with the newer timestamp wins. This means that if clocks drift, new data may be ignored or overwritten by old data; again, this is an operational challenge (and from what I&#39;ve heard, one that people are acutely aware of). Another interesting example is Google&#39;s <a href="http://research.google.com/archive/spanner.html">Spanner</a>: the paper describes their TrueTime API, which synchronizes time but also estimates worst-case clock drift.</p>
-<h3>Time with a &quot;Local-clock&quot; assumption</h3>
+<h3 id="time-with-a-local-clock-assumption">Time with a &quot;Local-clock&quot; assumption</h3>
 <p>The second, and perhaps more plausible assumption is that each machine has its own clock, but there is no global clock. It means that you cannot use the local clock in order to determine whether a remote timestamp occurred before or after a local timestamp; in other words, you cannot meaningfully compare timestamps from two different machines.</p>
 <p class="img-container"><img src="images/local-clock.png" alt="Local clock"></p>
 <p>The local clock assumption corresponds more closely to the real world. It assigns a partial order: events on each system are ordered but events cannot be ordered across systems by only using a clock.</p>
 <p>However, you can use timestamps to order events on a single machine; and you can use timeouts on a single machine as long as you are careful not to allow the clock to jump around. Of course, on a machine controlled by an end-user this is probably assuming too much: for example, a user might accidentally change their date to a different value while looking up a date using the operating system&#39;s date control.</p>
-<h3>Time with a &quot;No-clock&quot; assumption</h3>
+<h3 id="time-with-a-no-clock-assumption">Time with a &quot;No-clock&quot; assumption</h3>
 <p>Finally, there is the notion of logical time. Here, we don&#39;t use clocks at all and instead track causality in some other way. Remember, a timestamp is simply a shorthand for the state of the world up to that point - so we can use counters and communication to determine whether something happened before, after or concurrently with something else.</p>
 <p>This way, we can determine the order of events between different machines, but cannot say anything about intervals and cannot use timeouts (since we assume that there is no &quot;time sensor&quot;). This is a partial order: events can be ordered on a single system using a counter and no communication, but ordering events across systems requires a message exchange.</p>
 <p>One of the most cited papers in distributed systems is Lamport&#39;s paper on <a href="http://research.microsoft.com/users/lamport/pubs/time-clocks.pdf">time, clocks and the ordering of events</a>. Vector clocks, a generalization of that concept (which I will cover in more detail), are a way to track causality without using clocks. Cassandra&#39;s cousins Riak (Basho) and Voldemort (Linkedin) use vector clocks rather than assuming that nodes have access to a global clock of perfect accuracy. This allows those systems to avoid the clock accuracy issues mentioned earlier.</p>
 <p>When clocks are not used, the maximum precision at which events can be ordered across distant machines is bound by communication latency.</p>
-<h2>How is time used in a distributed system?</h2>
+<h2 id="how-is-time-used-in-a-distributed-system-">How is time used in a distributed system?</h2>
 <p>What is the benefit of time?</p>
 <ol class="list">
 <li>Time can define order across a system (without communication)</li>
@@ -149,7 +149,7 @@ For some elements in a partial order, the totality property does not hold - in o
 </ul>
 <p>A global clock would allow operations on two different machines to be ordered without the two machines communicating directly. Without a global clock, we need to communicate in order to determine order.</p>
 <p>Time can also be used to define boundary conditions for algorithms - specifically, to distinguish between &quot;high latency&quot; and &quot;server or network link is down&quot;. This is a very important use case; in most real-world systems timeouts are used to determine whether a remote machine has failed, or whether it is simply experiencing high network latency. Algorithms that make this determination are called failure detectors; and I will discuss them fairly soon.</p>
-<h2>Vector clocks (time for causal order)</h2>
+<h2 id="vector-clocks-time-for-causal-order-">Vector clocks (time for causal order)</h2>
 <p>Earlier, we discussed the different assumptions about the rate of progress of time across a distributed system. Assuming that we cannot achieve accurate clock synchronization - or starting with the goal that our system should not be sensitive to issues with time synchronization, how can we order things?</p>
 <p>Lamport clocks and vector clocks are replacements for physical clocks which rely on counters and communication to determine the order of events across a distributed system. These clocks provide a counter that is comparable across different nodes.</p>
 <p><em>A Lamport clock</em> is simple. Each process maintains a counter using the following rules:</p>
@@ -234,7 +234,7 @@ VectorClock.prototype.merge = function(other) {
 <p>Each of the three nodes (A, B, C) keeps track of the vector clock. As events occur, they are timestamped with the current value of the vector clock. Examining a vector clock such as <code>{ A: 2, B: 4, C: 1 }</code> lets us accurately identify the messages that (potentially) influenced that event.</p>
 <p>The issue with vector clocks is mainly that they require one entry per node, which means that they can potentially become very large for large systems. A variety of techniques have been applied to reduce the size of vector clocks (either by performing periodic garbage collection, or by reducing accuracy by limiting the size).</p>
 <p>We&#39;ve looked at how order and causality can be tracked without physical clocks. Now, let&#39;s look at how time durations can be used for cutoff.</p>
-<h2>Failure detectors (time for cutoff)</h2>
+<h2 id="failure-detectors-time-for-cutoff-">Failure detectors (time for cutoff)</h2>
 <p>As I stated earlier, the amount of time spent waiting can provide clues about whether a system is partitioned or merely experiencing high latency. In this case, we don&#39;t need to assume a global clock of perfect accuracy - it is simply enough that there is a reliable-enough local clock.</p>
 <p>Given a program running on one node, how can it tell that a remote node has failed? In the absence of accurate information, we can infer that an unresponsive remote node has failed after some reasonable amount of time has passed.</p>
 <p>But what is a &quot;reasonable amount&quot;? This depends on the latency between the local and remote nodes. Rather than explicitly specifying algorithms with specific values (which would inevitably be wrong in some cases), it would be nicer to deal with a suitable abstraction.</p>
@@ -260,7 +260,7 @@ VectorClock.prototype.merge = function(other) {
 <p>As you can see above, certain problems are not solvable without a failure detector in asynchronous systems. This is because without a failure detector (or strong assumptions about time bounds e.g. the synchronous system model), it is not possible to tell whether a remote node has crashed, or is simply experiencing high latency. That distinction is important for any system that aims for single-copy consistency: failed nodes can be ignored because they cannot cause divergence, but partitioned nodes cannot be safely ignored.</p>
 <p>How can one implement a failure detector? Conceptually, there isn&#39;t much to a simple failure detector, which simply detects failure when a timeout expires. The most interesting part relates to how the judgments are made about whether a remote node has failed.</p>
 <p>Ideally, we&#39;d prefer the failure detector to be able to adjust to changing network conditions and to avoid hardcoding timeout values into it. For example, Cassandra uses an <a href="https://www.google.com/search?q=The+Phi+accrual+failure+detector">accrual failure detector</a>, which is a failure detector that outputs a suspicion level (a value between 0 and 1) rather than a binary &quot;up&quot; or &quot;down&quot; judgment. This allows the application using the failure detector to make its own decisions about the tradeoff between accurate detection and early detection.</p>
-<h2>Time, order and performance</h2>
+<h2 id="time-order-and-performance">Time, order and performance</h2>
 <p>Earlier, I alluded to having to pay the cost for order. What did I mean?</p>
 <p>If you&#39;re writing a distributed system, you presumably own more than one computer. The natural (and realistic) view of the world is a partial order, not a total order. You can transform a partial order into a total order, but this requires communication, waiting and imposes restrictions that limit how many computers can do work at any particular point in time.</p>
 <p>All clocks are mere approximations bound by either network latency (logical time) or by physics. Even keeping a simple integer counter in sync across multiple nodes is a challenge.</p>
@@ -277,23 +277,23 @@ VectorClock.prototype.merge = function(other) {
 <p>In other cases, it is acceptable to give an answer that only represents the best known estimate - that is, is based on only a subset of the total information contained in the system. In particular, during a network partition one may need to answer queries with only a part of the system being accessible. In other use cases, the end user cannot really distinguish between a relatively recent answer that can be obtained cheaply and one that is guaranteed to be correct and is expensive to calculate. For example, is the Twitter follower count for some user X, or X+1? Or are movies A, B and C the absolutely best answers for some query? Doing a cheaper, mostly correct &quot;best effort&quot; can be acceptable.</p>
 <p>In the next two chapters we&#39;ll examine replication for fault-tolerant strongly consistent systems - systems which provide strong guarantees while being increasingly resilient to failures. These systems provide solutions for the first case: when you need to guarantee correctness and are willing to pay for it. Then, we&#39;ll discuss systems with weak consistency guarantees, which can remain available in the face of partitions, but that can only give you a &quot;best effort&quot; answer.</p>
 <hr>
-<h2>Further reading</h2>
-<h3>Lamport clocks, vector clocks</h3>
+<h2 id="further-reading">Further reading</h2>
+<h3 id="lamport-clocks-vector-clocks">Lamport clocks, vector clocks</h3>
 <ul class="list">
 <li><a href="http://research.microsoft.com/users/lamport/pubs/time-clocks.pdf">Time, Clocks and Ordering of Events in a Distributed System</a> - Leslie Lamport, 1978</li>
 </ul>
-<h3>Failure detection</h3>
+<h3 id="failure-detection">Failure detection</h3>
 <ul class="list">
 <li><a href="http://scholar.google.com/scholar?q=Unreliable+Failure+Detectors+for+Reliable+Distributed+Systems">Unreliable failure detectors and reliable distributed systems</a> - Chandra and Toueg</li>
 <li><a href="http://www.cs.cornell.edu/people/egs/sqrt-s/doc/TR2006-2025.pdf">Latency- and Bandwidth-Minimizing Optimal Failure Detectors</a> - So &amp; Sirer, 2007</li>
 <li><a href="http://scholar.google.com/scholar?q=The+failure+detector+abstraction">The failure detector abstraction</a>, Freiling, Guerraoui &amp; Kuznetsov, 2011</li>
 </ul>
-<h3>Snapshots</h3>
+<h3 id="snapshots">Snapshots</h3>
 <ul class="list">
 <li><a href="http://scholar.google.com/scholar?q=Consistent+global+states+of+distributed+systems%3A+Fundamental+concepts+and+mechanisms">Consistent global states of distributed systems: Fundamental concepts and mechanisms</a>, Ozalp Babaogly and Keith Marzullo, 1993</li>
 <li><a href="http://scholar.google.com/scholar?q=Distributed+snapshots%3A+Determining+global+states+of+distributed+systems">Distributed snapshots: Determining global states of distributed systems</a>, K. Mani Chandy and Leslie Lamport, 1985</li>
 </ul>
-<h3>Causality</h3>
+<h3 id="causality">Causality</h3>
 <ul class="list">
 <li><a href="http://www.vs.inf.ethz.ch/publ/papers/holygrail.pdf">Detecting Causal Relationships in Distributed Computations: In Search of the Holy Grail</a> - Schwarz &amp; Mattern, 1994</li>
 <li><a href="http://scholar.google.com/scholar?q=Understanding+the+limitations+of+causally+and+totally+ordered+communication">Understanding the Limitations of Causally and Totally Ordered Communication</a> - Cheriton &amp; Skeen, 1993</li>

@@ -92,7 +92,7 @@ The replication algorithms that maintain single-copy consistency include:
 
 These algorithms vary in their fault tolerance (e.g. the types of faults they can tolerate). I've classified these simply by the number of messages exchanged during an execution of the algorithm, because I think it is interesting to try to find an answer to the question "what are we buying with the added message exchanges?"
 
-The diagram below, adapted from Ryan Barret at [Google](http://www.google.com/events/io/2009/sessions/TransactionsAcrossDatacenters.html), describes some of the aspects of the different options:
+The diagram below, adapted from Ryan Barret at [Google](https://snarfed.org/transactions_across_datacenters_io.html), describes some of the aspects of the different options:
 
 ![Comparison of replication methods, from http://www.google.com/events/io/2009/sessions/TransactionsAcrossDatacenters.html](images/google-transact09.png)
 

@@ -59,7 +59,7 @@
 
     <div id="main">
       <div id="content" class="post">
-<h1>1. Distributed systems at a high level</h1>
+<h1 id="-chapter_number-distributed-systems-at-a-high-level">1. Distributed systems at a high level</h1>
 <blockquote>
 <p>Distributed programming is the art of solving the same problem that you can solve on a single computer using multiple computers.</p>
 </blockquote>
@@ -77,7 +77,7 @@
 <p>As the figure above from <a href="http://www.morganclaypool.com/doi/abs/10.2200/S00516ED2V01Y201306CAC024">Barroso, Clidaras &amp; Hölzle</a> shows, the performance gap between high-end and commodity hardware decreases with cluster size assuming a uniform memory access pattern across all nodes.</p>
 <p>Ideally, adding a new machine would increase the performance and capacity of the system linearly. But of course this is not possible, because there is some overhead that arises due to having separate computers. Data needs to be copied around, computation tasks have to be coordinated and so on. This is why it&#39;s worthwhile to study distributed algorithms - they provide efficient solutions to specific problems, as well as guidance about what is possible, what the minimum cost of a correct implementation is, and what is impossible.</p>
 <p>The focus of this text is on distributed programming and systems in a mundane, but commercially relevant setting: the data center. For example, I will not discuss specialized problems that arise from having an exotic network configuration, or that arise in a shared-memory setting. Additionally, the focus is on exploring the system design space rather than on optimizing any specific design - the latter is a topic for a much more specialized text.</p>
-<h2>What we want to achieve: Scalability and other good things</h2>
+<h2 id="what-we-want-to-achieve-scalability-and-other-good-things">What we want to achieve: Scalability and other good things</h2>
 <p>The way I see it, everything starts with the need to deal with size.</p>
 <p>Most things are trivial at a small scale - and the same problem becomes much harder once you surpass a certain size, volume or other physically constrained thing. It&#39;s easy to lift a piece of chocolate, it&#39;s hard to lift a mountain. It&#39;s easy to count how many people are in a room, and hard to count how many people are in a country.</p>
 <p>So everything starts with size - scalability. Informally speaking, in a scalable system as we move from small to large, things should not get incrementally worse. Here&#39;s another definition:</p>
@@ -94,7 +94,7 @@
 </ul>
 <p>Of course, in a real system growth occurs on multiple different axes simultaneously; each metric captures just some aspect of growth.</p>
 <p>A scalable system is one that continues to meet the needs of its users as scale increases. There are two particularly relevant aspects - performance and availability - which can be measured in various ways.</p>
-<h3>Performance (and latency)</h3>
+<h3 id="performance-and-latency-">Performance (and latency)</h3>
 <dl>
   <dt><a href="http://en.wikipedia.org/wiki/Computer_performance">Performance</a></dt>
   <dd>is characterized by the amount of useful work accomplished by a computer system compared to the time and resources used.</dd>
@@ -128,7 +128,7 @@
 <p>The other key point based on this definition is that if nothing happens, there is no &quot;latent period&quot;. A system in which data doesn&#39;t change doesn&#39;t (or shouldn&#39;t) have a latency problem.</p>
 <p>In a distributed system, there is a minimum latency that cannot be overcome: the speed of light limits how fast information can travel, and hardware components have a minimum latency cost incurred per operation (think RAM and hard drives but also CPUs).</p>
 <p>How much that minimum latency impacts your queries depends on the nature of those queries and the physical distance the information needs to travel.</p>
-<h3>Availability (and fault tolerance)</h3>
+<h3 id="availability-and-fault-tolerance-">Availability (and fault tolerance)</h3>
 <p>The second aspect of a scalable system is availability.</p>
 <dl>
   <dt><a href="http://en.wikipedia.org/wiki/High_availability">Availability</a></dt>
@@ -181,7 +181,7 @@
 </dl>
 
 <p>Fault tolerance boils down to this: define what faults you expect and then design a system or an algorithm that is tolerant of them. You can&#39;t tolerate faults you haven&#39;t considered.</p>
-<h2>What prevents us from achieving good things?</h2>
+<h2 id="what-prevents-us-from-achieving-good-things-">What prevents us from achieving good things?</h2>
 <p>Distributed systems are constrained by two physical factors:</p>
 <ul class="list">
 <li>the number of nodes (which increases with the required storage and computation capacity)</li>
@@ -197,7 +197,7 @@
 <p>Both performance and availability are defined by the external guarantees the system makes. On a high level, you can think of the guarantees as the SLA (service level agreement) for the system: if I write data, how quickly can I access it elsewhere? After the data is written, what guarantees do I have of durability? If I ask the system to run a computation, how quickly will it return results? When components fail, or are taken out of operation, what impact will this have on the system?</p>
 <p>There is another criterion, which is not explicitly mentioned but implied: intelligibility. How understandable are the guarantees that are made? Of course, there are no simple metrics for what is intelligible.</p>
 <p>I was kind of tempted to put &quot;intelligibility&quot; under physical limitations. After all, it is a hardware limitation in people that we have a hard time understanding anything that involves <a href="http://en.wikipedia.org/wiki/Working_memory#Capacity">more moving things than we have fingers</a>. That&#39;s the difference between an error and an anomaly - an error is incorrect behavior, while an anomaly is unexpected behavior. If you were smarter, you&#39;d expect the anomalies to occur.</p>
-<h2>Abstractions and models</h2>
+<h2 id="abstractions-and-models">Abstractions and models</h2>
 <p>This is where abstractions and models come into play. Abstractions make things more manageable by removing real-world aspects that are not relevant to solving a problem. Models describe the key properties of a distributed system in a precise manner. I&#39;ll discuss many kinds of models in the next chapter, such as:</p>
 <ul class="list">
 <li>System model (asynchronous / synchronous)</li>
@@ -210,7 +210,7 @@
 <p>One can often gain performance by exposing more details about the internals of the system. For example, in <a href="http://en.wikipedia.org/wiki/Column-oriented_DBMS">columnar storage</a>, the user can (to some extent) reason about the locality of the key-value pairs within the system and hence make decisions that influence the performance of typical queries. Systems which hide these kinds of details are easier to understand (since they act more like single unit, with fewer details to think about), while systems that expose more real-world details may be more performant (because they correspond more closely to reality).</p>
 <p>Several types of failures make writing distributed systems that act like a single system difficult. Network latency and network partitions (e.g. total network failure between some nodes) mean that a system needs to sometimes make hard choices about whether it is better to stay available but lose some crucial guarantees that cannot be enforced, or to play it safe and refuse clients when these types of failures occur.</p>
 <p>The CAP theorem - which I will discuss in the next chapter - captures some of these tensions. In the end, the ideal system meets both programmer needs (clean semantics) and business needs (availability/consistency/latency).</p>
-<h2>Design techniques: partition and replicate</h2>
+<h2 id="design-techniques-partition-and-replicate">Design techniques: partition and replicate</h2>
 <p>The manner in which a data set is distributed between multiple nodes is very important. In order for any computation to happen, we need to locate the data and then act on it.</p>
 <p>There are two basic techniques that can be applied to a data set. It can be split over multiple nodes (partitioning) to allow for more parallel processing. It can also be copied or cached on different nodes to reduce the distance between the client and the server and for greater fault tolerance (replication).</p>
 <blockquote>
@@ -219,7 +219,7 @@
 <p>The picture below illustrates the difference between these two: partitioned data (A and B below) is divided into independent sets, while replicated data (C below) is copied to multiple locations.</p>
 <p class="img-container"><img src="images/part-repl.png" alt="Partition and replicate"></p>
 <p>This is the one-two punch for solving any problem where distributed computing plays a role. Of course, the trick is in picking the right technique for your concrete implementation; there are many algorithms that implement replication and partitioning, each with different limitations and advantages which need to be assessed against your design objectives.</p>
-<h3>Partitioning</h3>
+<h3 id="partitioning">Partitioning</h3>
 <p>Partitioning is dividing the dataset into smaller distinct independent sets; this is used to reduce the impact of dataset growth since each partition is a subset of the data.</p>
 <ul class="list">
 <li>Partitioning improves performance by limiting the amount of data to be examined and by locating related data in the same partition</li>
@@ -227,7 +227,7 @@
 </ul>
 <p>Partitioning is also very much application-specific, so it is hard to say much about it without knowing the specifics. That&#39;s why the focus is on replication in most texts, including this one.</p>
 <p>Partitioning is mostly about defining your partitions based on what you think the primary access pattern will be, and dealing with the limitations that come from having independent partitions (e.g. inefficient access across partitions, different rate of growth etc.).</p>
-<h3>Replication</h3>
+<h3 id="replication">Replication</h3>
 <p>Replication is making copies of the same data on multiple machines; this allows more servers to take part in the computation.</p>
 <p>Let me inaccurately quote <a href="http://en.wikipedia.org/wiki/Homer_vs._the_Eighteenth_Amendment">Homer J. Simpson</a>:</p>
 <blockquote>
@@ -244,7 +244,7 @@
 <p>The choice of a consistency model is crucial: a good consistency model provides clean semantics for programmers (in other words, the properties it guarantees are easy to reason about) and meets business/design goals such as high availability or strong consistency.</p>
 <p>Only one consistency model for replication - strong consistency - allows you to program as-if the underlying data was not replicated. Other consistency models expose some internals of the replication to the programmer. However, weaker consistency models can provide lower latency and higher availability - and are not necessarily harder to understand, just different.</p>
 <hr>
-<h2>Further reading</h2>
+<h2 id="further-reading">Further reading</h2>
 <ul class="list">
 <li><a href="http://www.morganclaypool.com/doi/pdf/10.2200/s00193ed1v01y200905cac006">The Datacenter as a Computer - An Introduction to the Design of Warehouse-Scale Machines</a> - Barroso &amp;  Hölzle, 2008</li>
 <li><a href="http://en.wikipedia.org/wiki/Fallacies_of_Distributed_Computing">Fallacies of Distributed Computing</a></li>

@@ -59,7 +59,7 @@
 
     <div id="main">
       <div id="content" class="post">
-<h1>4. Replication</h1>
+<h1 id="-chapter_number-replication">4. Replication</h1>
 <p>The replication problem is one of many problems in distributed systems. I&#39;ve chosen to focus on it over other problems such as leader election, failure detection, mutual exclusion, consensus and global snapshots because it is often the part that people are most interested in. One way in which parallel databases are differentiated is in terms of their replication features, for example. Furthermore, replication provides a context for many subproblems, such as leader election, failure detection, consensus and atomic broadcast.</p>
 <p>Replication is a group communication problem. What arrangement and communication pattern gives us the performance and availability characteristics we desire? How can we ensure fault tolerance, durability and non-divergence in the face of network partitions and simultaneous node failure?</p>
 <p>Again, there are many ways to approach replication. The approach I&#39;ll take here just looks at high level patterns that are possible for a system with replication. Looking at this visually helps keep the discussion focused on the overall pattern rather than the specific messaging involved. My goal here is to explore the design space rather than to explain the specifics of each algorithm.</p>
@@ -74,7 +74,7 @@
 </ol>
 <p>This model is loosely based on <a href="https://www.google.com/search?q=understanding+replication+in+databases+and+distributed+systems">this article</a>. Note that the pattern of messages exchanged in each portion of the task depends on the specific algorithm: I am intentionally trying to get by without discussing the specific algorithm.</p>
 <p>Given these stages, what kind of communication patterns can we create? And what are the performance and availability implications of the patterns we choose?</p>
-<h2>Synchronous replication</h2>
+<h2 id="synchronous-replication">Synchronous replication</h2>
 <p>The first pattern is synchronous replication (also known as active, or eager, or push, or pessimistic replication). Let&#39;s draw what that looks like:</p>
 <p class="img-container"><img src="images/replication-sync.png" alt="replication" style="height: 340px;"></p>
 <p>Here, we can see three distinct stages: first, the client sends the request. Next, what we called the synchronous portion of replication takes place. The term refers to the fact that the client is blocked - waiting for a reply from the system.</p>
@@ -83,7 +83,7 @@
 <p>From a performance perspective, this means that the system will be as fast as the slowest server in it. The system will also be very sensitive to changes in network latency, since it requires every server to reply before proceeding.</p>
 <p>Given the N-of-N approach, the system cannot tolerate the loss of any servers. When a server is lost, the system can no longer write to all the nodes, and so it cannot proceed. It might be able to provide read-only access to the data, but modifications are not allowed after a node has failed in this design.</p>
 <p>This arrangement can provide very strong durability guarantees: the client can be certain that all N servers have received, stored and acknowledged the request when the response is returned. In order to lose an accepted update, all N copies would need to be lost, which is about as good a guarantee as you can make.</p>
-<h2>Asynchronous replication</h2>
+<h2 id="asynchronous-replication">Asynchronous replication</h2>
 <p>Let&#39;s contrast this with the second pattern - asynchronous replication (a.k.a. passive replication, or pull replication, or lazy replication). As you may have guessed, this is the opposite of synchronous replication:</p>
 <p class="img-container"><img src="images/replication-async.png" alt="replication" style="height: 340px;"></p>
 <p>Here, the master (/leader / coordinator) immediately sends back a response to the client. It might at best store the update locally, but it will not do any significant work synchronously and the client is not forced to wait for more rounds of communication to occur between the servers.</p>
@@ -95,7 +95,7 @@
 <p>Finally, it&#39;s worth noting that passive replication cannot ensure that all nodes in the system always contain the same state. If you accept writes at multiple locations and do not require that those nodes synchronously agree, then you will run the risk of divergence: reads may return different results from different locations (particularly after nodes fail and recover), and global constraints (which require communicating with everyone) cannot be enforced.</p>
 <p>I haven&#39;t really mentioned the communication patterns during a read (rather than a write), because the pattern of reads really follows from the pattern of writes: during a read, you want to contact as few nodes as possible. We&#39;ll discuss this a bit more in the context of quorums.</p>
 <p>We&#39;ve only discussed two basic arrangements and none of the specific algorithms. Yet we&#39;ve been able to figure out quite a bit of about the possible communication patterns as well as their performance, durability guarantees and availability characteristics.</p>
-<h2>An overview of major replication approaches</h2>
+<h2 id="an-overview-of-major-replication-approaches">An overview of major replication approaches</h2>
 <p>Having discussed the two basic replication approaches: synchronous and asynchronous replication, let&#39;s have a look at the major replication algorithms.</p>
 <p>There are many, many different ways to categorize replication techniques. The second distinction (after sync vs. async) I&#39;d like to introduce is between:</p>
 <ul class="list">
@@ -119,7 +119,7 @@
 <li>6n messages (3-phase commit, Paxos with repeated leader election)</li>
 </ul>
 <p>These algorithms vary in their fault tolerance (e.g. the types of faults they can tolerate). I&#39;ve classified these simply by the number of messages exchanged during an execution of the algorithm, because I think it is interesting to try to find an answer to the question &quot;what are we buying with the added message exchanges?&quot;</p>
-<p>The diagram below, adapted from Ryan Barret at <a href="http://www.google.com/events/io/2009/sessions/TransactionsAcrossDatacenters.html">Google</a>, describes some of the aspects of the different options:</p>
+<p>The diagram below, adapted from Ryan Barret at <a href="https://snarfed.org/transactions_across_datacenters_io.html">Google</a>, describes some of the aspects of the different options:</p>
 <p class="img-container"><img src="images/google-transact09.png" alt="Comparison of replication methods, from http://www.google.com/events/io/2009/sessions/TransactionsAcrossDatacenters.html"></p>
 <p>The consistency, latency, throughput, data loss and failover characteristics in the diagram above can really be traced back to the two different replication methods: synchronous replication (e.g. waiting before responding) and asynchronous replication. When you wait, you get worse performance but stronger guarantees. The throughput difference between 2PC and quorum systems will become apparent when we discuss partition (and latency) tolerance.</p>
 <p>In that diagram, algorithms enforcing weak (/eventual) consistency are lumped up into one category (&quot;gossip&quot;). However, I will discuss replication methods for weak consistency - gossip and (partial) quorum systems - in more detail. The &quot;transactions&quot; row really refers more to global predicate evaluation, which is not supported in systems with weak consistency (though local predicate evaluation can be supported).</p>
@@ -132,7 +132,7 @@
 <li>PBS (probabilistically bounded staleness) uses simulation and information collected from a real world system to characterize the expected behavior of partial quorum systems.</li>
 </ul>
 <p>I&#39;ll talk about all of these a bit  further on, first; let&#39;s look at the replication algorithms that maintain single-copy consistency.</p>
-<h2>Primary/backup replication</h2>
+<h2 id="primary-backup-replication">Primary/backup replication</h2>
 <p>Primary/backup replication (also known as primary copy replication master-slave replication or log shipping) is perhaps the most commonly used replication method, and the most basic algorithm. All updated are performed on the primary, and a log of operations (or alternatively, changes) is shipped across the network to the backup replicas. There are two variants:</p>
 <ul class="list">
 <li>asynchronous primary/backup replication and</li>
@@ -151,7 +151,7 @@
 <p>I am simplifying here of course. While all primary/backup replication algorithms follow the same general messaging pattern, they differ in their handling of failover, replicas being offline for extended periods and so on. However, it is not possible to be resilient to inopportune failures of the primary in this scheme.</p>
 <p>What is key in the log-shipping / primary/backup based schemes is that they can only offer a best-effort guarantee (e.g. they are susceptible to lost updates or incorrect updates if nodes fail at inopportune times). Furthermore, P/B schemes are susceptible to split-brain, where the failover to a backup kicks in due to a temporary network issue and causes both the primary and backup to be active at the same time.</p>
 <p>To prevent inopportune failures from causing consistency guarantees to be violated; we need to add another round of messaging, which gets us the two phase commit protocol (2PC).</p>
-<h2>Two phase commit (2PC)</h2>
+<h2 id="two-phase-commit-2pc-">Two phase commit (2PC)</h2>
 <p><a href="http://en.wikipedia.org/wiki/Two-phase_commit_protocol">Two phase commit</a> (2PC) is a protocol used in many classic relational databases. For example, MySQL Cluster (not to be confused with the regular MySQL) provides synchronous replication using 2PC. The diagram below illustrates the message flow:</p>
 <pre>[ Coordinator ] -&gt; OK to commit?     [ Peers ]
                 &lt;- Yes / No
@@ -166,10 +166,10 @@
 <p>As we learned in the chapter regarding CAP, 2PC is a CA - it is not partition tolerant. The failure model that 2PC addresses does not include network partitions; the prescribed way to recover from a node failure is to wait until the network partition heals. There is no safe way to promote a new coordinator if one fails; rather a manual intervention is required. 2PC is also fairly latency-sensitive, since it is a write N-of-N approach in which writes cannot proceed until the slowest node acknowledges them.</p>
 <p>2PC strikes a decent balance between performance and fault tolerance, which is why it has been popular in relational databases. However, newer systems often use a partition tolerant consensus algorithm, since such an algorithm can provide automatic recovery from temporary network partitions as well as more graceful handling of increased between-node latency.</p>
 <p>Let&#39;s look at partition tolerant consensus algorithms next.</p>
-<h2>Partition tolerant consensus algorithms</h2>
+<h2 id="partition-tolerant-consensus-algorithms">Partition tolerant consensus algorithms</h2>
 <p>Partition tolerant consensus algorithms are as far as we&#39;re going to go in terms of fault-tolerant algorithms that maintain single-copy consistency. There is a further class of fault tolerant algorithms: algorithms that tolerate <a href="http://en.wikipedia.org/wiki/Byzantine_fault_tolerance">arbitrary (Byzantine) faults</a>; these include nodes that fail by acting maliciously. Such algorithms are rarely used in commercial systems, because they are more expensive to run and more complicated to implement - and hence I will leave them out.</p>
 <p>When it comes to partition tolerant consensus algorithms, the most well-known algorithm is the Paxos algorithm. It is, however, notoriously difficult to implement and explain, so I will focus on Raft, a recent (~early 2013) algorithm designed to be easier to teach and implement. Let&#39;s first take a look at network partitions and the general characteristics of partition tolerant consensus algorithms.</p>
-<h3>What is a network partition?</h3>
+<h3 id="what-is-a-network-partition-">What is a network partition?</h3>
 <p>A network partition is the failure of a network link to one or several nodes. The nodes themselves continue to stay active, and they may even be able to receive requests from clients on their side of the network partition. As we learned earlier - during the discussion of the CAP theorem - network partitions do occur and not all systems handle them gracefully.</p>
 <p>Network partitions are tricky because during a network partition, it is not possible to distinguish between a failed remote node and the node being unreachable. If a network partition occurs but no nodes fail, then the system is divided into two partitions which are simultaneously active. The two diagrams below illustrate how a network partition can look similar to a node failure.</p>
 <p>A system of 2 nodes, with a failure vs. a network partition:</p>
@@ -178,29 +178,29 @@
 <p class="img-container"><img src="images/system-of-3.png" alt="replication"  style="max-height: 130px;"></p>
 <p>A system that enforces single-copy consistency must have some method to break symmetry: otherwise, it will split into two separate systems, which can diverge from each other and can no longer maintain the illusion of a single copy.</p>
 <p>Network partition tolerance for systems that enforce single-copy consistency requires that during a network partition, only one partition of the system remains active since during a network partition it is not possible to prevent divergence (e.g. CAP theorem).</p>
-<h3>Majority decisions</h3>
+<h3 id="majority-decisions">Majority decisions</h3>
 <p>This is why partition tolerant consensus algorithms rely on a majority vote. Requiring a majority of nodes - rather than all of the nodes (as in 2PC) - to agree on updates allows a minority of the nodes to be down, or slow, or unreachable due to a network partition. As long as <code>(N/2 + 1)-of-N</code> nodes are up and accessible, the system can continue to operate.</p>
 <p>Partition tolerant consensus algorithms use an odd number of nodes (e.g. 3, 5 or 7). With just two nodes, it is not possible to have a clear majority after a failure. For example, if the number of nodes is three, then the system is resilient to one node failure; with five nodes the system is resilient to two node failures.</p>
 <p>When a network partition occurs, the partitions behave asymmetrically. One partition will contain the majority of the nodes. Minority partitions will stop processing operations to prevent divergence during a network partition, but the majority partition can remain active. This ensures that only a single copy of the system state remains active.</p>
 <p>Majorities are also useful because they can tolerate disagreement: if there is a perturbation or failure, the nodes may vote differently. However, since there can be only one majority decision, a temporary disagreement can at most block the protocol from proceeding (giving up liveness) but it cannot violate the single-copy consistency criterion (safety property).</p>
-<h3>Roles</h3>
+<h3 id="roles">Roles</h3>
 <p>There are two ways one might structure a system: all nodes may have the same responsibilities, or nodes may have separate, distinct roles.</p>
 <p>Consensus algorithms for replication generally opt for having distinct roles for each node. Having a single fixed leader or master server is an optimization that makes the system more efficient, since we know that all updates must pass through that server. Nodes that are not the leader just need to forward their requests to the leader.</p>
 <p>Note that having distinct roles does not preclude the system from recovering from the failure of the leader (or any other role). Just because roles are fixed during normal operation doesn&#39;t mean that one cannot recover from failure by reassigning the roles after a failure (e.g. via a leader election phase). Nodes can reuse the result of a leader election until node failures and/or network partitions occur.</p>
 <p>Both Paxos and Raft make use of distinct node roles. In particular, they have a leader node (&quot;proposer&quot; in Paxos) that is responsible for coordination during normal operation. During normal operation, the rest of the nodes are followers (&quot;acceptors&quot; or &quot;voters&quot; in Paxos).</p>
-<h3>Epochs</h3>
+<h3 id="epochs">Epochs</h3>
 <p>Each period of normal operation in both Paxos and Raft is called an epoch (&quot;term&quot; in Raft). During each epoch only one node is the designated leader (a similar system is <a href="http://en.wikipedia.org/wiki/Japanese_era_name">used in Japan</a> where era names change upon imperial succession).</p>
 <p class="img-container"><img src="images/epoch.png" alt="replication"  style="max-height: 130px;"></p>
 <p>After a successful election, the same leader coordinates until the end of the epoch. As shown in the diagram above (from the Raft paper), some elections may fail, causing the epoch to end immediately.</p>
 <p>Epochs act as a logical clock, allowing other nodes to identify when an outdated node starts communicating - nodes that were partitioned or out of operation will have a smaller epoch number than the current one, and their commands are ignored.</p>
-<h3>Leader changes via duels</h3>
+<h3 id="leader-changes-via-duels">Leader changes via duels</h3>
 <p>During normal operation, a partition-tolerant consensus algorithm is rather simple. As we&#39;ve seen earlier, if we didn&#39;t care about fault tolerance, we could just use 2PC. Most of the complexity really arises from ensuring that once a consensus decision has been made, it will not be lost and the protocol can handle leader changes as a result of a network or node failure.</p>
 <p>All nodes start as followers; one node is elected to be a leader at the start. During normal operation, the leader maintains a heartbeat which allows the followers to detect if the leader fails or becomes partitioned.</p>
 <p>When a node detects that a leader has become non-responsive (or, in the initial case, that no leader exists), it switches to an intermediate state (called &quot;candidate&quot; in Raft) where it increments the term/epoch value by one, initiates a leader election and competes to become the new leader.</p>
 <p>In order to be elected a leader, a node must receive a majority of the votes. One way to assign votes is to simply assign them on a first-come-first-served basis; this way, a leader will eventually be elected. Adding a random amount of waiting time between attempts at getting elected will reduce the number of nodes that are simultaneously attempting to get elected.</p>
-<h3>Numbered proposals within an epoch</h3>
+<h3 id="numbered-proposals-within-an-epoch">Numbered proposals within an epoch</h3>
 <p>During each epoch, the leader proposes one value at a time to be voted upon. Within each epoch, each proposal is numbered with a unique strictly increasing number. The followers (voters / acceptors) accept the first proposal they receive for a particular proposal number.</p>
-<h3>Normal operation</h3>
+<h3 id="normal-operation">Normal operation</h3>
 <p>During normal operation, all proposals go through the leader node. When a client submits a proposal (e.g. an update operation), the leader contacts all nodes in the quorum. If no competing proposals exist (based on the responses from the followers), the leader proposes the value. If a majority of the followers accept the value, then the value is considered to be accepted.</p>
 <p>Since it is possible that another node is also attempting to act as a leader, we need to ensure that once a single proposal has been accepted, its value can never change. Otherwise a proposal that has already been accepted might for example be reverted by a competing leader. Lamport states this as:</p>
 <blockquote>
@@ -243,16 +243,16 @@
 <li>procedures for snapshotting and garbage collecting the data required to guarantee safety after some reasonable period (e.g. balancing storage requirements and fault tolerance requirements)</li>
 </ul>
 <p>Google&#39;s <a href="http://labs.google.com/papers/paxos_made_live.html">Paxos Made Live</a> paper details some of these challenges.</p>
-<h2>Partition-tolerant consensus algorithms: Paxos, Raft, ZAB</h2>
+<h2 id="partition-tolerant-consensus-algorithms-paxos-raft-zab">Partition-tolerant consensus algorithms: Paxos, Raft, ZAB</h2>
 <p>Hopefully, this has given you a sense of how a partition-tolerant consensus algorithm works. I encourage you to read one of the papers in the further reading section to get a grasp of the specifics of the different algorithms.</p>
 <p><em>Paxos</em>. Paxos is one of the most important algorithms when writing strongly consistent partition tolerant replicated systems. It is used in many of Google&#39;s systems, including the <a href="http://research.google.com/archive/chubby.html">Chubby lock manager</a> used by <a href="http://research.google.com/archive/bigtable.html">BigTable</a>/<a href="http://research.google.com/pubs/pub36971.html">Megastore</a>, the Google File System as well as <a href="http://research.google.com/archive/spanner.html">Spanner</a>.</p>
 <p>Paxos is named after the Greek island of Paxos, and was originally presented by Leslie Lamport in a paper called &quot;The Part-Time Parliament&quot; in 1998. It is often considered to be difficult to implement, and there have been a series of papers from companies with considerable distributed systems expertise explaining further practical details (see the further reading). You might want to read Lamport&#39;s commentary on this issue <a href="http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html#lamport-paxos">here</a> and <a href="http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html#paxos-simple">here</a>.</p>
 <p>The issues mostly relate to the fact that Paxos is described in terms of a single round of consensus decision making, but an actual working implementation usually wants to run multiple rounds of consensus efficiently. This has led to the development of many <a href="http://en.wikipedia.org/wiki/Paxos_algorithm">extensions on the core protocol</a> that anyone interested in building a Paxos-based system still needs to digest. Furthermore, there are additional practical challenges such as how to facilitate cluster membership change.</p>
 <p><em>ZAB</em>. ZAB - the Zookeeper Atomic Broadcast protocol is used in Apache Zookeeper. Zookeeper is a system which provides coordination primitives for distributed systems, and is used by many Hadoop-centric distributed systems for coordination (e.g. <a href="http://hbase.apache.org/">HBase</a>, <a href="http://storm-project.net/">Storm</a>, <a href="http://kafka.apache.org/">Kafka</a>). Zookeeper is basically the open source community&#39;s version of Chubby. Technically speaking atomic broadcast is a problem different from pure consensus, but it still falls under the category of partition tolerant algorithms that ensure strong consistency.</p>
 <p><em>Raft</em>. Raft is a recent (2013) addition to this family of algorithms. It is designed to be easier to teach than Paxos, while providing the same guarantees. In particular, the different parts of the algorithm are more clearly separated and the paper also describes a mechanism for cluster membership change. It has recently seen adoption in <a href="https://github.com/coreos/etcd">etcd</a> inspired by ZooKeeper.</p>
-<h2>Replication methods with strong consistency</h2>
+<h2 id="replication-methods-with-strong-consistency">Replication methods with strong consistency</h2>
 <p>In this chapter, we took a look at replication methods that enforce strong consistency. Starting with a contrast between synchronous work and asynchronous work, we worked our way up to algorithms that are tolerant of increasingly complex failures. Here are some of the key characteristics of each of the algorithms:</p>
-<h4>Primary/Backup</h4>
+<h4 id="primary-backup">Primary/Backup</h4>
 <ul class="list">
 <li>Single, static master</li>
 <li>Replicated log, slaves are not involved in executing operations</li>
@@ -260,14 +260,14 @@
 <li>Not partition tolerant</li>
 <li>Manual/ad-hoc failover, not fault tolerant, &quot;hot backup&quot;</li>
 </ul>
-<h4>2PC</h4>
+<h4 id="2pc">2PC</h4>
 <ul class="list">
 <li>Unanimous vote: commit or abort</li>
 <li>Static master</li>
 <li>2PC cannot survive simultaneous failure of the coordinator and a node during a commit</li>
 <li>Not partition tolerant, tail latency sensitive</li>
 </ul>
-<h4>Paxos</h4>
+<h4 id="paxos">Paxos</h4>
 <ul class="list">
 <li>Majority vote</li>
 <li>Dynamic master</li>
@@ -275,13 +275,13 @@
 <li>Less sensitive to tail latency</li>
 </ul>
 <hr>
-<h2>Further reading</h2>
-<h4>Primary-backup and 2PC</h4>
+<h2 id="further-reading">Further reading</h2>
+<h4 id="primary-backup-and-2pc">Primary-backup and 2PC</h4>
 <ul class="list">
 <li><a href="http://scholar.google.com/scholar?q=Replication+techniques+for+availability">Replication techniques for availability</a> - Robbert van Renesse &amp; Rachid Guerraoui, 2010</li>
 <li><a href="http://research.microsoft.com/en-us/people/philbe/ccontrol.aspx">Concurrency Control and Recovery in Database Systems</a></li>
 </ul>
-<h4>Paxos</h4>
+<h4 id="paxos">Paxos</h4>
 <ul class="list">
 <li><a href="http://research.microsoft.com/users/lamport/pubs/lamport-paxos.pdf">The Part-Time Parliament</a> - Leslie Lamport</li>
 <li><a href="http://research.microsoft.com/users/lamport/pubs/paxos-simple.pdf">Paxos Made Simple</a> - Leslie Lamport, 2001</li>
@@ -292,7 +292,7 @@
 <li><a href="http://research.microsoft.com/en-us/um/people/lamport/pubs/reconfiguration-tutorial.pdf">Reconfiguring a State Machine</a> - Lamport et al - changing cluster membership</li>
 <li><a href="http://citeseer.ist.psu.edu/viewdoc/summary?doi=10.1.1.20.4762">Implementing Fault-Tolerant Services Using the State Machine Approach: a Tutorial</a> - Fred Schneider</li>
 </ul>
-<h4>Raft and ZAB</h4>
+<h4 id="raft-and-zab">Raft and ZAB</h4>
 <ul class="list">
 <li><a href="https://ramcloud.stanford.edu/wiki/download/attachments/11370504/raft.pdf">In Search of an Understandable Consensus Algorithm</a>, Diego Ongaro, John Ousterhout, 2013</li>
 <li><a href="http://www.youtube.com/watch?v=YbZ3zDzDnrw">Raft Lecture - User Study</a></li>
