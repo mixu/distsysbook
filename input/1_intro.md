@@ -79,7 +79,7 @@ And what does it mean to be "latent"?
   <dd>From Latin latens, latentis, present participle of lateo ("lie hidden"). Existing or present but concealed or inactive.</dd>
 </dl>
 
-This definition is pretty cool, because it highlights how latency is really the time between something happened and the time it has an impact or becomes visible.
+This definition is pretty cool, because it highlights how latency is really the time between when something happened and the time it has an impact or becomes visible.
 
 For example, imagine that you are infected with an airborne virus that turns people into zombies. The latent period is the time between when you became infected, and when you turn into a zombie. That's latency: the time during which something that has already happened is concealed from view.
 
