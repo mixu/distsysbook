@@ -64,7 +64,7 @@ After some time, the partitions heal and the replica servers exchange informatio
     [C] ----[merge]---> result
 
 
-Another way to think about systems with weak consistency guarantees is to imagine a set of clients sending messages to two in some order. Because there is no coordination protocol that enforces a single total order, the messages can get delivered in different orders at the two replicas:
+Another way to think about systems with weak consistency guarantees is to imagine a set of clients sending messages to two replicas in some order. Because there is no coordination protocol that enforces a single total order, the messages can get delivered in different orders at the two replicas:
 
     [Clients]  --> [A]  1, 2, 3
     [Clients]  --> [B]  2, 3, 1
