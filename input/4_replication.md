@@ -283,7 +283,7 @@ Of course, implementing this algorithm is much harder than it sounds. There are 
 - procedures for bringing a new replica up to date in a safe and efficient manner after a crash, disk loss or when a new node is provisioned
 - procedures for snapshotting and garbage collecting the data required to guarantee safety after some reasonable period (e.g. balancing storage requirements and fault tolerance requirements)
 
-Google's [Paxos Made Live](http://labs.google.com/papers/paxos_made_live.html) paper details some of these challenges.
+Google's [Paxos Made Live](http://research.google.com/archive/paxos_made_live.html) paper details some of these challenges.
 
 ## Partition-tolerant consensus algorithms: Paxos, Raft, ZAB
 
