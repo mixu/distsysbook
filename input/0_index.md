@@ -37,7 +37,7 @@ The [fourth chapter](replication.html) introduces the replication problem, and t
 
 The [fifth chapter](eventual.html) discussed replication with weak consistency guarantees. It introduces a basic reconciliation scenario, where partitioned replicas attempt to reach agreement. It then discusses Amazon's Dynamo as an example of a system design with weak consistency guarantees. Finally, two perspectives on disorderly programming are discussed: CRDTs and the CALM theorem.
 
-# Appendix
+# 6. Appendix
 
 [The appendix](appendix.html) covers recommendations for further reading.
 
