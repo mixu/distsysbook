@@ -10,7 +10,9 @@ Writing a patch should be easy: edit the markdown files under `./input/` and fil
 
 I didn't include the commits from prior to the release, because writing is a messy and painful process of revisions, deletions and rethinking things.
 
-    git shortlog -sn
+```shell
+git shortlog -sn
+```
 
 tells me that I made 205 commits between October 2012 (1st commit was in September) and September 16th 2013 to write this.
 
@@ -18,14 +20,18 @@ tells me that I made 205 commits between October 2012 (1st commit was in Septemb
 
 The content of the book is in `./input/`. To generate the book:
 
-    npm install
-    make build
+```shell
+npm install
+make build
+```
 
 which generates the output in `./output/`.
 
 To rebuild the .epub and .mobi files:
 
-    make ebook
+```shell
+make ebook
+```
 
 You need to install Calibre first for the HTML to epub/mobi conversion.
 
