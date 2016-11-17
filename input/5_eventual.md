@@ -391,7 +391,7 @@ If, then we can express our computation in a manner in which it is possible to t
 Note that this requires a different kind of language, since these inferences are hard to make for traditional programming languages where sequence, selection and iteration are at the core. Which is why the Bloom language was designed.
 
 
-## What is non-mononicity good for?
+## What is non-monotonicity good for?
 
 The difference between monotonicity and non-monotonicity is interesting. For example, adding two numbers is monotonic, but calculating an aggregation over two nodes containing numbers is not. What's the difference? One of these is a computation (adding two numbers), while the other is an assertion (calculating an aggregate).
 
