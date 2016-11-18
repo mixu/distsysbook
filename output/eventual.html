@@ -59,7 +59,7 @@
 
     <div id="main">
       <div id="content" class="post">
-<h1>5. Replication: weak consistency model protocols</h1>
+<h1 id="-chapter_number-replication-weak-consistency-model-protocols">6. Replication: weak consistency model protocols</h1>
 <p>Now that we&#39;ve taken a look at protocols that can enforce single-copy consistency under an increasingly realistic set of supported failure cases, let&#39;s turn our attention at the world of options that opens up once we let go of the requirement of single-copy consistency.</p>
 <p>By and large, it is hard to come up with a single dimension that defines or characterizes the protocols that allow for replicas to diverge. Most such protocols are highly available, and the key issue is more whether or not the end users find the guarantees, abstractions and APIs useful for their purpose in spite of the fact that the replicas may diverge when node and/or network failures occur.</p>
 <p>Why haven&#39;t weakly consistent systems been more popular?</p>
@@ -81,7 +81,7 @@
 <p><em>Eventual consistency with strong guarantees</em>. This type of system guarantees that the results converge to a common value equivalent to some correct sequential execution. In other words, such systems do not produce in anomalous results; without any coordination you can build replicas of the same service, and those replicas can communicate in any pattern and receive the updates in any order, and they will eventually agree on the end result as long as they all see the same information.</p>
 <p>CRDT&#39;s (convergent replicated data types) are data types that guarantee convergence to the same value in spite of network delays, partitions and message reordering. They are provably convergent, but the data types that can be implemented as CRDT&#39;s are limited.</p>
 <p>The CALM (consistency as logical monotonicity) conjecture is an alternative expression of the same principle: it equates logical monotonicity with convergence. If we can conclude that something is logically monotonic, then it is also safe to run without coordination. Confluence analysis - in particular, as applied for the Bloom programming language - can be used to guide programmer decisions about when and where to use the coordination techniques from strongly consistent systems and when it is safe to execute without coordination.</p>
-<h2>Reconciling different operation orders</h2>
+<h2 id="reconciling-different-operation-orders">Reconciling different operation orders</h2>
 <p>What does a system that does not enforce single-copy consistency look like?  Let&#39;s try to make this more concrete by looking a few examples.</p>
 <p>Perhaps the most obvious characteristic of systems that do not enforce single-copy consistency is that they allow replicas to diverge from each other. This means that there is no strictly defined pattern of communication: replicas can be separated from each other and yet continue to be available and accept writes.</p>
 <p>Let&#39;s imagine a system of three replicas, each of which is partitioned from the others. For example, the replicas might be in different datacenters and for some reason unable to communicate. Each replica remains available during the partition, accepting both reads and writes from some set of clients:</p>
@@ -112,7 +112,7 @@
 B: concat(concat(concat(&#39;&#39;, &#39;World&#39;), &#39;!&#39;), &#39;Hello &#39;) = &#39;World!Hello &#39;</pre>
 <p>This is, of course, incorrect. Again, what we&#39;d like to happen is that the replicas converge to the same result.</p>
 <p>Keeping these two examples in mind, let&#39;s look at Amazon&#39;s Dynamo first to establish a baseline, and then discuss a number of novel approaches to building systems with weak consistency guarantees, such as CRDT&#39;s and the CALM theorem.</p>
-<h2>Amazon&#39;s Dynamo</h2>
+<h2 id="amazon-s-dynamo">Amazon&#39;s Dynamo</h2>
 <p>Amazon&#39;s Dynamo system design (2007) is probably the best-known system that offers weak consistency guarantees but high availability. It is the basis for many other real world systems, including LinkedIn&#39;s Voldemort, Facebook&#39;s Cassandra and Basho&#39;s Riak.</p>
 <p>Dynamo is an eventually consistent, highly available key-value store. A key value store is like a large hash table: a client can set values via <code>set(key, value)</code> and retrieve them by key using <code>get(key)</code>. A Dynamo cluster consists of N peer nodes; each node has a set of keys which is it responsible for storing.</p>
 <p>Dynamo prioritizes availability over consistency; it does not guarantee single-copy consistency. Instead, replicas may diverge from each other when values are written; when a key is read, there is a read reconciliation phase that attempts to reconcile differences between replicas before returning the value back to the client.</p>
@@ -136,10 +136,10 @@ B: concat(concat(concat(&#39;&#39;, &#39;World&#39;), &#39;!&#39;), &#39;Hello &
     V
 [ Node D]</pre>
 <p>After looking at how a write is initially accepted, we&#39;ll look at how conflicts are detected, as well as the asynchronous replica synchronization task. This task is needed because of the high availability design, in which nodes may be temporarily unavailable (down or partitioned). The replica synchronization task ensures that nodes can catch up fairly rapidly even after a failure.</p>
-<h3>Consistent hashing</h3>
+<h3 id="consistent-hashing">Consistent hashing</h3>
 <p>Whether we are reading or writing, the first thing that needs to happen is that we need to locate where the data should live on the system. This requires some type of key-to-node mapping.</p>
 <p>In Dynamo, keys are mapped to nodes using a hashing technique known as <a href="https://github.com/mixu/vnodehash">consistent hashing</a> (which I will not discuss in detail). The main idea is that a key can be mapped to a set of nodes responsible for it by a simple calculation on the client. This means that a client can locate keys without having to query the system for the location of each key; this saves system resources as hashing is generally faster than performing a remote procedure call.</p>
-<h3>Partial quorums</h3>
+<h3 id="partial-quorums">Partial quorums</h3>
 <p>Once we know where a key should be stored, we need to do some work to persist the value. This is a synchronous task; the reason why we will immediately write the value onto multiple nodes is to provide a higher level of durability (e.g. protection from the immediate failure of a node).</p>
 <p>Just like Paxos or Raft, Dynamo uses quorums for replication. However, Dynamo&#39;s quorums are sloppy (partial) quorums rather than strict (majority) quorums.</p>
 <p>Informally, a strict quorum system is a quorum system with the property that any two quorums (sets) in the quorum system overlap. Requiring a majority to vote for an update before accepting it guarantees that only a single history is admitted since each majority quorum must overlap in at least one node. This was the property that Paxos, for example, relied on.</p>
@@ -168,7 +168,7 @@ B: concat(concat(concat(&#39;&#39;, &#39;World&#39;), &#39;!&#39;), &#39;Hello &
 </ul>
 <p>There is another detail: when sending a read or write request, are all N nodes asked to respond (Riak), or only a number of nodes that meets the minimum (e.g. R or W; Voldemort). The &quot;send-to-all&quot; approach is faster and less sensitive to latency (since it only waits for the fastest R or W nodes of N) but also less efficient, while the &quot;send-to-minimum&quot; approach is more sensitive to latency (since latency communicating with a single node will delay the operation) but also more efficient (fewer messages / connections overall).</p>
 <p>What happens when the read and write quorums overlap, e.g. (<code>R + W &gt; N</code>)? Specifically, it is often claimed that this results in &quot;strong consistency&quot;.</p>
-<h3>Is R + W &gt; N the same as &quot;strong consistency&quot;?</h3>
+<h3 id="is-r-w-n-the-same-as-strong-consistency-">Is R + W &gt; N the same as &quot;strong consistency&quot;?</h3>
 <p>No.</p>
 <p>It&#39;s not completely off base: a system where <code>R + W &gt; N</code> can detect read/write conflicts, since any read quorum and any write quorum share a member. E.g. at least one node is in both quorums:</p>
 <pre>   1     2   N/2+1     N/2+2    N
@@ -176,7 +176,7 @@ B: concat(concat(concat(&#39;&#39;, &#39;World&#39;), &#39;!&#39;), &#39;Hello &
 <p>This guarantees that a previous write will be seen by a subsequent read. However, this only holds if the nodes in N never change. Hence, Dynamo doesn&#39;t qualify, because in Dynamo the cluster membership can change if nodes fail.</p>
 <p>Dynamo is designed to be always writable. It has a mechanism which handles node failures by adding a different, unrelated server into the set of nodes responsible for certain keys when the original server is down. This means that the quorums are no longer guaranteed to always overlap. Even <code>R = W = N</code> would not qualify, since while the quorum sizes are equal to N, the nodes in those quorums can change during a failure. Concretely, during a partition, if a sufficient number of nodes cannot be reached, Dynamo will add new nodes to the quorum from unrelated but accessible nodes.</p>
 <p>Furthermore, Dynamo doesn&#39;t handle partitions in the manner that a system enforcing a strong consistency model would: namely, writes are allowed on both sides of a partition, which means that for at least some time the system does not act as a single copy. So calling <code>R + W &gt; N</code> &quot;strongly consistent&quot; is misleading; the guarantees merely probabilistic - which is not what strong consistency refers to.</p>
-<h3>Conflict detection and read repair</h3>
+<h3 id="conflict-detection-and-read-repair">Conflict detection and read repair</h3>
 <p>Systems that allow replicas to diverge must have a way to eventually reconcile two different values. As briefly mentioned during the partial quorum approach, one way to do this is to detect conflicts at read time, and then apply some conflict resolution method. But how is this done?</p>
 <p>In general, this is done by tracking the causal history of a piece of data by supplementing it with some metadata. Clients must keep the metadata information when they read data from the system, and must return back the metadata value when writing to the database.</p>
 <p>We&#39;ve already encountered a method for doing this: vector clocks can be used to represent the history of a value. Indeed, this is what the original Dynamo design uses for detecting conflicts.</p>
@@ -188,14 +188,14 @@ B: concat(concat(concat(&#39;&#39;, &#39;World&#39;), &#39;!&#39;), &#39;Hello &
 <p>When reading a value, the client contacts <code>R</code> of <code>N</code> nodes and asks them for the latest value for a key. It takes all the responses, discards the values that are strictly older (using the vector clock value to detect this). If there is only one unique vector clock + value pair, it returns that. If there are multiple vector clock + value pairs that have been edited concurrently (e.g. are not comparable), then all of those values are returned.</p>
 <p>As is obvious from the above, read repair may return multiple values. This means that the client / application developer must occasionally handle these cases by picking a value based on some use-case specific criterion.</p>
 <p>In addition, a key component of a practical vector clock system is that the clocks cannot be allowed to grow forever - so there needs to be a procedure for occasionally garbage collecting the clocks in a safe manner to balance fault tolerance with storage requirements.</p>
-<h3>Replica synchronization: gossip and Merkle trees</h3>
+<h3 id="replica-synchronization-gossip-and-merkle-trees">Replica synchronization: gossip and Merkle trees</h3>
 <p>Given that the Dynamo system design is tolerant of node failures and network partitions, it needs a way to deal with nodes rejoining the cluster after being partitioned, or when a failed node is replaced or partially recovered.</p>
 <p>Replica synchronization is used to bring nodes up to date after a failure, and for periodically synchronizing replicas with each other.</p>
 <p>Gossip is a probabilistic technique for synchronizing replicas. The pattern of communication (e.g. which node contacts which node) is not determined in advance. Instead, nodes have some probability <code>p</code> of attempting to synchronize with each other. Every <code>t</code> seconds, each node picks a node to communicate with. This provides an additional mechanism beyond the synchronous task (e.g. the partial quorum writes) which brings the replicas up to date.</p>
 <p>Gossip is scalable, and has no single point of failure, but can only provide probabilistic guarantees.</p>
 <p>In order to make the information exchange during replica synchronization efficient, Dynamo uses a technique called Merkle trees, which I will not cover in detail. The key idea is that a data store can be hashed at multiple different level of granularity: a hash representing the whole content, half the keys, a quarter of the keys and so on.</p>
 <p>By maintaining this fairly granular hashing, nodes can compare their data store content much more efficiently than a naive technique. Once the nodes have identified which keys have different values, they exchange the necessary information to bring the replicas up to date.</p>
-<h3>Dynamo in practice: probabilistically bounded staleness (PBS)</h3>
+<h3 id="dynamo-in-practice-probabilistically-bounded-staleness-pbs-">Dynamo in practice: probabilistically bounded staleness (PBS)</h3>
 <p>And that pretty much covers the Dynamo system design:</p>
 <ul class="list">
 <li>consistent hashing to determine key placement</li>
@@ -209,7 +209,7 @@ B: concat(concat(concat(&#39;&#39;, &#39;World&#39;), &#39;!&#39;), &#39;Hello &
 <p class="img-container"><img src="./images/pbs.png" alt="from the PBS paper"></p>
 <p>For example, going from <code>R=1</code>, <code>W=1</code> to <code>R=2</code>, <code>W=1</code> in the Yammer case reduces the inconsistency window from 1352 ms to 202 ms - while keeping the read latencies lower (32.6 ms) than the fastest strict quorum (<code>R=3</code>, <code>W=1</code>; 219.27 ms).</p>
 <p>For more details, have a look at the <a href="http://pbs.cs.berkeley.edu/">PBS website</a>  and the associated paper.</p>
-<h2>Disorderly programming</h2>
+<h2 id="disorderly-programming">Disorderly programming</h2>
 <p>Let&#39;s look back at the examples of the kinds of situations that we&#39;d like to resolve. The first scenario consisted of three different servers behind partitions; after the partitions healed, we wanted the servers to converge to the same value. Amazon&#39;s Dynamo made this possible by reading from <code>R</code> out of <code>N</code> nodes and then performing read reconciliation.</p>
 <p>In the second example, we considered a more specific operation: string concatenation. It turns out that there is no known technique for making string concatenation resolve to the same value without imposing an order on the operations (e.g. without expensive coordination). However, there are operations which can be applied safely in any order, where a simple register would not be able to do so. As Pat Helland wrote:</p>
 <blockquote>
@@ -239,7 +239,7 @@ B: max(max(max(0, 5), 7), 3) = 7</pre>
 <p>In both cases, two replicas see updates in different order, but we are able to merge the results in a way that has the same result in spite of what the order is. The result converges to the same answer in both cases because of the merge procedure (<code>max</code>) we used.</p>
 <p>It is likely not possible to write a merge procedure that works for all data types. In Dynamo, a value is a binary blob, so the best that can be done is to expose it and ask the application to handle each conflict.</p>
 <p>However, if we know that the data is of a more specific type, handling these kinds of conflicts becomes possible. CRDT&#39;s are data structures designed to provide data types that will always converge, as long as they see the same set of operations (in any order).</p>
-<h2>CRDTs: Convergent replicated data types</h2>
+<h2 id="crdts-convergent-replicated-data-types">CRDTs: Convergent replicated data types</h2>
 <p>CRDTs (convergent replicated datatypes) exploit knowledge regarding the commutativity and associativity of specific operations on specific datatypes.</p>
 <p>In order for a set of operations to converge on the same value in an environment where replicas only communicate occasionally, the operations need to be order-independent and insensitive to (message) duplication/redelivery. Thus, their operations need to be:</p>
 <ul class="list">
@@ -285,7 +285,7 @@ B: max(max(max(0, 5), 7), 3) = 7</pre>
 <p>To ensure anomaly-free operation, you need to find the right data type for your specific application - for example, if you know that you will only remove an item once, then a two-phase set works; if you will only ever add items to a set and never remove them, then a grow-only set works.</p>
 <p>Not all data structures have known implementations as CRDTs, but there are CRDT implementations for booleans, counters, sets, registers and graphs in the recent (2011) <a href="http://hal.inria.fr/docs/00/55/55/88/PDF/techreport.pdf">survey paper from Shapiro et al</a>.</p>
 <p>Interestingly, the register implementations correspond directly with the implementations that key value stores use: a last-write-wins register uses timestamps or some equivalent and simply converges to the largest timestamp value; a multi-valued register corresponds to the Dynamo strategy of retaining, exposing and reconciling concurrent changes. For the details, I recommend that you take a look at the papers in the further reading section of this chapter.</p>
-<h2>The CALM theorem</h2>
+<h2 id="the-calm-theorem">The CALM theorem</h2>
 <p>The CRDT data structures were based on the recognition that data structures expressible as semilattices are convergent. But programming is about more than just evolving state, unless you are just implementing a data store.</p>
 <p>Clearly, order-independence is an important property of any computation that converges: if the order in which data items are received influences the result of the computation, then there is no way to execute a computation without guaranteeing order.</p>
 <p>However, there are many programming models in which the order of statements does not play a significant role. For example, in the <a href="http://en.wikipedia.org/wiki/MapReduce">MapReduce model</a>, both the Map and the Reduce tasks are specified as stateless tuple-processing tasks that need to be run on a dataset. Concrete decisions about how and in what order data is routed to the tasks is not specified explicitly, instead, the batch job scheduler is responsible for scheduling the tasks to run on the cluster.</p>
@@ -318,7 +318,7 @@ B: max(max(max(0, 5), 7), 3) = 7</pre>
 </blockquote>
 <p>If, then we can express our computation in a manner in which it is possible to test for monotonicity, then we can perform a whole-program static analysis that detects which parts of the program are eventually consistent and safe to run without coordination (the monotonic parts) - and which parts are not (the non-monotonic ones).</p>
 <p>Note that this requires a different kind of language, since these inferences are hard to make for traditional programming languages where sequence, selection and iteration are at the core. Which is why the Bloom language was designed.</p>
-<h2>What is non-mononicity good for?</h2>
+<h2 id="what-is-non-mononicity-good-for-">What is non-mononicity good for?</h2>
 <p>The difference between monotonicity and non-monotonicity is interesting. For example, adding two numbers is monotonic, but calculating an aggregation over two nodes containing numbers is not. What&#39;s the difference? One of these is a computation (adding two numbers), while the other is an assertion (calculating an aggregate).</p>
 <p>How does a computation differ from an assertion? Let&#39;s consider the query &quot;is pizza a vegetable?&quot;. To answer that, we need to get at the core: when is it acceptable to infer that something is (or is not) true?</p>
 <p>There are several acceptable answers, each corresponding to a different set of assumptions regarding the information that we have and the way we ought to act upon it - and we&#39;ve come to accept different answers in different contexts.</p>
@@ -351,13 +351,13 @@ or P(false)</pre>
 <p>Purely monotone systems are rare. It seems that most applications operate under the closed-world assumption even when they have incomplete data, and we humans are fine with that. When a database tells you that a direct flight between San Francisco and Helsinki does not exist, you will probably treat this as &quot;according to this database, there is no direct flight&quot;, but you do not rule out the possibility that that in reality such a flight might still exist.</p>
 <p>Really, this issue only becomes interesting when replicas can diverge (e.g. during a partition or due to delays during normal operation). Then there is a need for a more specific consideration: whether the answer is based on just the current node, or the totality of the system.</p>
 <p>Further, since nonmonotonicity is caused by making an assertion, it seems plausible that many computations can proceed for a long time and only apply coordination at the point where some result or assertion is passed to a 3rd party system or end user. Certainly it is not necessary for every single read and write operation within a system to enforce a total order, if those reads and writes are simply a part of a long running computation.</p>
-<h2>The Bloom language</h2>
+<h2 id="the-bloom-language">The Bloom language</h2>
 <p>The <a href="http://www.bloom-lang.net/">Bloom language</a> is a language designed to make use of the CALM theorem. It is a Ruby DSL which has its formal basis in a temporal logic programming language called Dedalus.</p>
 <p>In Bloom, each node has a database consisting of collections and lattices. Programs are expressed as sets of unordered statements which interact with collections (sets of facts) and lattices (CRDTs). Statements are order-independent by default, but one can also write non-monotonic functions.</p>
 <p>Have a look at the <a href="http://www.bloom-lang.net/">Bloom website</a> and <a href="https://github.com/bloom-lang/bud/tree/master/docs">tutorials</a> to learn more about Bloom.</p>
 <hr>
-<h2>Further reading</h2>
-<h4>The CALM theorem, confluence analysis and Bloom</h4>
+<h2 id="further-reading">Further reading</h2>
+<h4 id="the-calm-theorem-confluence-analysis-and-bloom">The CALM theorem, confluence analysis and Bloom</h4>
 <p><a href="http://vimeo.com/53904989">Joe Hellerstein&#39;s talk @RICON 2012</a> is a good introduction to the topic, as is <a href="http://vimeo.com/45111940">Neil Conway&#39;s talk @Basho</a>. For Bloom in particular, see <a href="http://channel9.msdn.com/Events/Lang-NEXT/Lang-NEXT-2012/Bloom-Disorderly-Programming-for-a-Distributed-World">Peter Alvaro&#39;s talk@Microsoft</a>.</p>
 <ul class="list">
 <li><a href="http://www.eecs.berkeley.edu/Pubs/TechRpts/2010/EECS-2010-90.pdf">The Declarative Imperative: Experiences and Conjectures in Distributed Logic</a> - Hellerstein, 2010</li>
@@ -365,14 +365,14 @@ or P(false)</pre>
 <li><a href="http://db.cs.berkeley.edu/papers/UCB-lattice-tr.pdf">Logic and Lattices for Distributed Programming</a> - Conway et al., 2012</li>
 <li><a href="http://db.cs.berkeley.edu/papers/datalog2011-dedalus.pdf">Dedalus: Datalog in Time and Space</a> - Alvaro et al., 2011</li>
 </ul>
-<h4>CRDTs</h4>
+<h4 id="crdts">CRDTs</h4>
 <p><a href="http://research.microsoft.com/apps/video/dl.aspx?id=153540">Marc Shapiro&#39;s talk @ Microsoft</a> is a good starting point for understanding CRDT&#39;s.</p>
 <ul class="list">
 <li><a href="http://hal.archives-ouvertes.fr/docs/00/39/79/81/PDF/RR-6956.pdf">CRDTs: Consistency Without Concurrency Control</a> - Letitia et al., 2009</li>
 <li><a href="http://hal.inria.fr/docs/00/55/55/88/PDF/techreport.pdf">A comprehensive study of Convergent and Commutative Replicated Data Types</a>, Shapiro et al., 2011</li>
 <li><a href="http://arxiv.org/pdf/1210.3368v1.pdf">An Optimized conflict-free Replicated Set</a> - Bieniusa et al., 2012</li>
 </ul>
-<h4>Dynamo; PBS; optimistic replication</h4>
+<h4 id="dynamo-pbs-optimistic-replication">Dynamo; PBS; optimistic replication</h4>
 <ul class="list">
 <li><a href="http://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf">Dynamo: Amazon’s Highly Available Key-value Store</a> - DeCandia et al., 2007</li>
 <li><a href="http://scholar.google.com/scholar?q=PNUTS:+Yahoo!&#39;s+Hosted+Data+Serving+Platform">PNUTS: Yahoo!&#39;s Hosted Data Serving Platform</a> - Cooper et al., 2008</li>

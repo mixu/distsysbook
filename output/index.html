@@ -93,7 +93,7 @@
 
     <div id="main">
       <div id="content" class="post">
-<h2>Introduction</h2>
+<h2 id="introduction">Introduction</h2>
 <p>I wanted a text that would bring together the ideas behind many of the more recent distributed systems - systems such as Amazon&#39;s Dynamo, Google&#39;s BigTable and MapReduce, Apache&#39;s Hadoop and so on.</p>
 <p>In this text I&#39;ve tried to provide a more accessible introduction to distributed systems. To me, that means two things: introducing the key concepts that you will need in order to <a href="https://www.google.com/search?q=super+cool+ski+instructor">have a good time</a> reading more serious texts, and providing a narrative that covers things in enough detail that you get a gist of what&#39;s going on without getting stuck on details. It&#39;s 2013, you&#39;ve got the Internet, and you can selectively read more about the topics you find most interesting.</p>
 <p>In my view, much of distributed programming is about dealing with the implications of two consequences of distribution:</p>
@@ -105,17 +105,17 @@
 <p>This text is focused on distributed programming and systems concepts you&#39;ll need to understand commercial systems in the data center. It would be madness to attempt to cover everything. You&#39;ll learn many key protocols and algorithms (covering, for example, many of the most cited papers in the discipline), including some new exciting ways to look at eventual consistency that haven&#39;t still made it into college textbooks - such as CRDTs and the CALM theorem.</p>
 <p>I hope you like it! If you want to say thanks, follow me on <a href="https://github.com/mixu/">Github</a> (or <a href="http://twitter.com/mikitotakada">Twitter</a>). And if you spot an error, <a href="https://github.com/mixu/distsysbook/issues">file a pull request on Github</a>.</p>
 <hr>
-<h1>1. Basics</h1>
+<h1 id="1-basics">1. Basics</h1>
 <p><a href="intro.html">The first chapter</a> covers distributed systems at a high level by introducing a number of important terms and concepts. It covers high level goals, such as scalability, availability, performance, latency and fault tolerance; how those are hard to achieve, and how abstractions and models as well as partitioning and replication come into play.</p>
-<h1>2. Up and down the level of abstraction</h1>
+<h1 id="2-up-and-down-the-level-of-abstraction">2. Up and down the level of abstraction</h1>
 <p><a href="abstractions.html">The second chapter</a> dives deeper into abstractions and impossibility results. It starts with a Nietzsche quote, and then introduces system models and the many assumptions that are made in a typical system model. It then discusses the CAP theorem and summarizes the FLP impossibility result. It then turns to the implications of the CAP theorem, one of which is that one ought to explore other consistency models. A number of consistency models are then discussed.</p>
-<h1>3. Time and order</h1>
+<h1 id="3-time-and-order">3. Time and order</h1>
 <p>A big part of understanding distributed systems is about understanding time and order.  To the extent that we fail to understand and model time, our systems will fail. <a href="time.html">The third chapter</a> discusses time and order, and clocks as well as the various uses of time, order and clocks (such as vector clocks and failure detectors).</p>
-<h1>4. Replication: preventing divergence</h1>
+<h1 id="4-replication-preventing-divergence">4. Replication: preventing divergence</h1>
 <p>The <a href="replication.html">fourth chapter</a> introduces the replication problem, and the two basic ways in which it can be performed. It turns out that most of the relevant characteristics can be discussed with just this simple characterization. Then, replication methods for maintaining single-copy consistency are discussed from the least fault tolerant (2PC) to Paxos.</p>
-<h1>5. Replication: accepting divergence</h1>
+<h1 id="5-replication-accepting-divergence">5. Replication: accepting divergence</h1>
 <p>The <a href="eventual.html">fifth chapter</a> discussed replication with weak consistency guarantees. It introduces a basic reconciliation scenario, where partitioned replicas attempt to reach agreement. It then discusses Amazon&#39;s Dynamo as an example of a system design with weak consistency guarantees. Finally, two perspectives on disorderly programming are discussed: CRDTs and the CALM theorem.</p>
-<h1>Appendix</h1>
+<h1 id="appendix">Appendix</h1>
 <p><a href="appendix.html">The appendix</a> covers recommendations for further reading.</p>
 <hr>
 <p class="footnote">*: This is a <a href="http://en.wikipedia.org/wiki/Statistical_independence">lie</a>. <a href="http://blog.empathybox.com/post/19574936361/getting-real-about-distributed-system-reliability">This post by Jay Kreps elaborates</a>.
