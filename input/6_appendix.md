@@ -59,4 +59,4 @@ Here are some additional lists of recommended papers:
 - [Dynamo: Amazon’s Highly Available Key-value Store](http://scholar.google.com/scholar?q=Dynamo%3A+Amazon's+Highly+Available+Key-value+Store) - DeCandia et al.
 - [Bigtable: A Distributed Storage System for Structured Data](http://research.google.com/archive/bigtable.html) - Chang et al.
 - [The Chubby Lock Service for Loosely-Coupled Distributed Systems](http://research.google.com/archive/chubby.html) - Burrows
-- [ZooKeeper: Wait-free coordination for Internet-scale systems](http://labs.yahoo.com/publication/zookeeper-wait-free-coordination-for-internet-scale-systems/) - Hunt, Konar, Junqueira, Reed, 2010
+- [ZooKeeper: Wait-free coordination for Internet-scale systems](http://www.usenix.org/event/usenix10/tech/full_papers/Hunt.pdf) - Hunt, Konar, Junqueira, Reed, 2010
