@@ -114,7 +114,7 @@ I'll talk about all of these a bit  further on, first; let's look at the replica
 
 ## Primary/backup replication
 
-Primary/backup replication (also known as primary copy replication master-slave replication or log shipping) is perhaps the most commonly used replication method, and the most basic algorithm. All updated are performed on the primary, and a log of operations (or alternatively, changes) is shipped across the network to the backup replicas. There are two variants:
+Primary/backup replication (also known as primary copy replication master-slave replication or log shipping) is perhaps the most commonly used replication method, and the most basic algorithm. All updates are performed on the primary, and a log of operations (or alternatively, changes) is shipped across the network to the backup replicas. There are two variants:
 
 - asynchronous primary/backup replication and
 - synchronous primary/backup replication
