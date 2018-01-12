@@ -104,7 +104,7 @@
 <p>The <a href="#replication">fourth chapter</a> introduces the replication problem, and the two basic ways in which it can be performed. It turns out that most of the relevant characteristics can be discussed with just this simple characterization. Then, replication methods for maintaining single-copy consistency are discussed from the least fault tolerant (2PC) to Paxos.</p>
 <h1 id="5-replication-accepting-divergence">5. Replication: accepting divergence</h1>
 <p>The <a href="#eventual">fifth chapter</a> discussed replication with weak consistency guarantees. It introduces a basic reconciliation scenario, where partitioned replicas attempt to reach agreement. It then discusses Amazon&#39;s Dynamo as an example of a system design with weak consistency guarantees. Finally, two perspectives on disorderly programming are discussed: CRDTs and the CALM theorem.</p>
-<h1 id="appendix">Appendix</h1>
+<h1 id="6-appendix">6. Appendix</h1>
 <p><a href="#appendix">The appendix</a> covers recommendations for further reading.</p>
 <hr>
 <p class="footnote">*: This is a <a href="http://en.wikipedia.org/wiki/Statistical_independence">lie</a>. <a href="http://blog.empathybox.com/post/19574936361/getting-real-about-distributed-system-reliability">This post by Jay Kreps elaborates</a>.
@@ -170,7 +170,7 @@
   <dd>From Latin latens, latentis, present participle of lateo (&quot;lie hidden&quot;). Existing or present but concealed or inactive.</dd>
 </dl>
 
-<p>This definition is pretty cool, because it highlights how latency is really the time between something happened and the time it has an impact or becomes visible.</p>
+<p>This definition is pretty cool, because it highlights how latency is really the time between when something happened and the time it has an impact or becomes visible.</p>
 <p>For example, imagine that you are infected with an airborne virus that turns people into zombies. The latent period is the time between when you became infected, and when you turn into a zombie. That&#39;s latency: the time during which something that has already happened is concealed from view.</p>
 <p>Let&#39;s assume for a moment that our distributed system does just one high-level task: given a query, it takes all of the data in the system and calculates a single result. In other words, think of a distributed system as a data store with the ability to run a single deterministic computation (function) over its current content:</p>
 <p><code>result = query(all data in the system)</code></p>
@@ -301,7 +301,7 @@
 <li><a href="http://www.somethingsimilar.com/2013/01/14/notes-on-distributed-systems-for-young-bloods/">Notes on Distributed Systems for Young Bloods</a> - Hodges, 2013</li>
 </ul>
 <div style="page-break-after: always;"></div><a name="abstractions"></a><h1 id="-chapter_number-up-and-down-the-level-of-abstraction">2. Up and down the level of abstraction</h1>
-<p>In this chapter, we&#39;ll travel up and down the level of abstraction; look at some impossibility results (CAP and FLP) and then travel back down for the sake of performance.</p>
+<p>In this chapter, we&#39;ll travel up and down the level of abstraction, look at some impossibility results (CAP and FLP), and then travel back down for the sake of performance.</p>
 <p>If you&#39;ve done any programming, the idea of levels of abstraction is probably familiar to you. You&#39;ll always work at some level of abstraction, interface with a lower level layer through some API, and probably provide some higher-level API or user interface to your users. The seven-layer <a href="http://en.wikipedia.org/wiki/OSI_model">OSI model of computer networking</a> is a good example of this.</p>
 <p>Distributed programming is, I&#39;d assert, in large part dealing with consequences of distribution (duh!). That is, there is a tension between the reality that there are many nodes and with our desire for systems that &quot;work like a single system&quot;. That means finding a good abstraction that balances what is possible with what is understandable and performant.</p>
 <p>What do we mean when say X is more abstract than Y? First, that X does not introduce anything new or fundamentally different from Y. In fact, X may remove some aspects of Y or present them in a way that makes them more manageable.
@@ -432,7 +432,7 @@ Second, that X is in some sense easier to grasp than Y, assuming that the things
 <p>How can we work around this? By strengthening the assumptions (assume no partitions) or by weakening the guarantees. Consistency can be traded off against availability (and the related capabilities of offline accessibility and low latency). If &quot;consistency&quot; is defined as something less than &quot;all nodes see the same data at the same time&quot; then we can have both availability and some (weaker) consistency guarantee.</p>
 <p>Third, that <em>there is a tension between strong consistency and performance in normal operation</em>.</p>
 <p>Strong consistency / single-copy consistency requires that nodes communicate and agree on every operation. This results in high latency during normal operation.</p>
-<p>If you can live with a consistency model other than the classic one; a consistency model that allows replicas to lag or to diverge, then you can reduce latency during normal operation and maintain availability in the presence of partitions.</p>
+<p>If you can live with a consistency model other than the classic one, a consistency model that allows replicas to lag or to diverge, then you can reduce latency during normal operation and maintain availability in the presence of partitions.</p>
 <p>When fewer messages and fewer nodes are involved, an operation can complete faster. But the only way to accomplish that is to relax the guarantees: let some of the nodes be contacted less frequently, which means that nodes can contain old data.</p>
 <p>This also makes it possible for anomalies to occur. You are no longer guaranteed to get the most recent value. Depending on what kinds of guarantees are made, you might read a value that is older than expected, or even lose some updates.</p>
 <p>Fourth - and somewhat indirectly - that <em>if we do not want to give up availability during a network partition, then we need to explore whether consistency models other than strong consistency are workable for our purposes</em>.</p>
@@ -819,7 +819,7 @@ VectorClock.prototype.merge = function(other) {
 </ul>
 <p>I&#39;ll talk about all of these a bit  further on, first; let&#39;s look at the replication algorithms that maintain single-copy consistency.</p>
 <h2 id="primary-backup-replication">Primary/backup replication</h2>
-<p>Primary/backup replication (also known as primary copy replication master-slave replication or log shipping) is perhaps the most commonly used replication method, and the most basic algorithm. All updated are performed on the primary, and a log of operations (or alternatively, changes) is shipped across the network to the backup replicas. There are two variants:</p>
+<p>Primary/backup replication (also known as primary copy replication master-slave replication or log shipping) is perhaps the most commonly used replication method, and the most basic algorithm. All updates are performed on the primary, and a log of operations (or alternatively, changes) is shipped across the network to the backup replicas. There are two variants:</p>
 <ul class="list">
 <li>asynchronous primary/backup replication and</li>
 <li>synchronous primary/backup replication</li>
@@ -928,7 +928,7 @@ VectorClock.prototype.merge = function(other) {
 <li>procedures for bringing a new replica up to date in a safe and efficient manner after a crash, disk loss or when a new node is provisioned</li>
 <li>procedures for snapshotting and garbage collecting the data required to guarantee safety after some reasonable period (e.g. balancing storage requirements and fault tolerance requirements)</li>
 </ul>
-<p>Google&#39;s <a href="http://labs.google.com/papers/paxos_made_live.html">Paxos Made Live</a> paper details some of these challenges.</p>
+<p>Google&#39;s <a href="http://research.google.com/archive/paxos_made_live.html">Paxos Made Live</a> paper details some of these challenges.</p>
 <h2 id="partition-tolerant-consensus-algorithms-paxos-raft-zab">Partition-tolerant consensus algorithms: Paxos, Raft, ZAB</h2>
 <p>Hopefully, this has given you a sense of how a partition-tolerant consensus algorithm works. I encourage you to read one of the papers in the further reading section to get a grasp of the specifics of the different algorithms.</p>
 <p><em>Paxos</em>. Paxos is one of the most important algorithms when writing strongly consistent partition tolerant replicated systems. It is used in many of Google&#39;s systems, including the <a href="http://research.google.com/archive/chubby.html">Chubby lock manager</a> used by <a href="http://research.google.com/archive/bigtable.html">BigTable</a>/<a href="http://research.google.com/pubs/pub36971.html">Megastore</a>, the Google File System as well as <a href="http://research.google.com/archive/spanner.html">Spanner</a>.</p>
@@ -982,250 +982,10 @@ VectorClock.prototype.merge = function(other) {
 <ul class="list">
 <li><a href="https://ramcloud.stanford.edu/wiki/download/attachments/11370504/raft.pdf">In Search of an Understandable Consensus Algorithm</a>, Diego Ongaro, John Ousterhout, 2013</li>
 <li><a href="http://www.youtube.com/watch?v=YbZ3zDzDnrw">Raft Lecture - User Study</a></li>
-<li><a href="http://research.yahoo.com/pub/3274">A simple totally ordered broadcast protocol</a> - Junqueira, Reed</li>
-<li><a href="http://research.yahoo.com/pub/3514">ZooKeeper Atomic Broadcast</a></li>
+<li><a href="http://labs.yahoo.com/publication/a-simple-totally-ordered-broadcast-protocol/">A simple totally ordered broadcast protocol</a> - Junqueira, Reed, 2008</li>
+<li><a href="http://labs.yahoo.com/publication/zab-high-performance-broadcast-for-primary-backup-systems/">ZooKeeper Atomic Broadcast</a> - Reed, 2011</li>
 </ul>
-<div style="page-break-after: always;"></div><a name="replication.md~"></a><h1 id="-chapter_number-replication">5. Replication</h1>
-<p>The replication problem is one of many problems in distributed systems. I&#39;ve chosen to focus on it over other problems such as leader election, failure detection, mutual exclusion, consensus and global snapshots because it is often the part that people are most interested in. One way in which parallel databases are differentiated is in terms of their replication features, for example. Furthermore, replication provides a context for many subproblems, such as leader election, failure detection, consensus and atomic broadcast.</p>
-<p>Replication is a group communication problem. What arrangement and communication pattern gives us the performance and availability characteristics we desire? How can we ensure fault tolerance, durability and non-divergence in the face of network partitions and simultaneous node failure?</p>
-<p>Again, there are many ways to approach replication. The approach I&#39;ll take here just looks at high level patterns that are possible for a system with replication. Looking at this visually helps keep the discussion focused on the overall pattern rather than the specific messaging involved. My goal here is to explore the design space rather than to explain the specifics of each algorithm.</p>
-<p>Let&#39;s first define what replication looks like. We assume that we have some initial database, and that clients make requests which change the state of the database.</p>
-<p class="img-container"><img src="images/replication-both.png" alt="replication" style="height: 340px;"></p>
-<p>The arrangement and communication pattern can then be divided into several stages:</p>
-<ol class="list">
-<li>(Request) The client sends a request to a server</li>
-<li>(Sync) The synchronous portion of the replication takes place</li>
-<li>(Response) A response is returned to the client</li>
-<li>(Async) The asynchronous portion of the replication takes place</li>
-</ol>
-<p>This model is loosely based on <a href="https://www.google.com/search?q=understanding+replication+in+databases+and+distributed+systems">this article</a>. Note that the pattern of messages exchanged in each portion of the task depends on the specific algorithm: I am intentionally trying to get by without discussing the specific algorithm.</p>
-<p>Given these stages, what kind of communication patterns can we create? And what are the performance and availability implications of the patterns we choose?</p>
-<h2 id="synchronous-replication">Synchronous replication</h2>
-<p>The first pattern is synchronous replication (also known as active, or eager, or push, or pessimistic replication). Let&#39;s draw what that looks like:</p>
-<p class="img-container"><img src="images/replication-sync.png" alt="replication" style="height: 340px;"></p>
-<p>Here, we can see three distinct stages: first, the client sends the request. Next, what we called the synchronous portion of replication takes place. The term refers to the fact that the client is blocked - waiting for a reply from the system.</p>
-<p>During the synchronous phase, the first server contacts the two other servers and waits until it has received replies from all the other servers. Finally, it sends a response to the client informing it of the result (e.g. success or failure).</p>
-<p>All this seems straightforward. What can we say of this specific arrangement of communication patterns, without discussing the details of the algorithm during the synchronous phase? First, observe that this is a write N - of - N approach: before a response is returned, it has to be seen and acknowledged by every server in the system.</p>
-<p>From a performance perspective, this means that the system will be as fast as the slowest server in it. The system will also be very sensitive to changes in network latency, since it requires every server to reply before proceeding.</p>
-<p>Given the N-of-N approach, the system cannot tolerate the loss of any servers. When a server is lost, the system can no longer write to all the nodes, and so it cannot proceed. It might be able to provide read-only access to the data, but modifications are not allowed after a node has failed in this design.</p>
-<p>This arrangement can provide very strong durability guarantees: the client can be certain that all N servers have received, stored and acknowledged the request when the response is returned. In order to lose an accepted update, all N copies would need to be lost, which is about as good a guarantee as you can make.</p>
-<h2 id="asynchronous-replication">Asynchronous replication</h2>
-<p>Let&#39;s contrast this with the second pattern - asynchronous replication (a.k.a. passive replication, or pull replication, or lazy replication). As you may have guessed, this is the opposite of synchronous replication:</p>
-<p class="img-container"><img src="images/replication-async.png" alt="replication" style="height: 340px;"></p>
-<p>Here, the master (/leader / coordinator) immediately sends back a response to the client. It might at best store the update locally, but it will not do any significant work synchronously and the client is not forced to wait for more rounds of communication to occur between the servers.</p>
-<p>At some later stage, the asynchronous portion of the replication task takes place. Here, the master contacts the other servers using some communication pattern, and the other servers update their copies of the data. The specifics depend on the algorithm in use.</p>
-<p>What can we say of this specific arrangement without getting into the details of the algorithm? Well, this is a write 1 - of - N approach: a response is returned immediately and update propagation occurs sometime later.</p>
-<p>From a performance perspective, this means that the system is fast: the client does not need to spend any additional time waiting for the internals of the system to do their work. The system is also more tolerant of network latency, since fluctuations in internal latency do not cause additional waiting on the client side.</p>
-<p>This arrangement can only provide weak, or probabilistic durability guarantees. If nothing goes wrong, the data is eventually replicated to all N machines. However, if the only server containing the data is lost before this can take place, the data is permanently lost.</p>
-<p>Given the 1-of-N approach, the system can remain available as long as at least one node is up (at least in theory, though in practice the load will probably be too high). A purely lazy approach like this provides no durability or consistency guarantees; you may be allowed to write to the system, but there are no guarantees that you can read back what you wrote if any faults occur.</p>
-<p>Finally, it&#39;s worth noting that passive replication cannot ensure that all nodes in the system always contain the same state. If you accept writes at multiple locations and do not require that those nodes synchronously agree, then you will run the risk of divergence: reads may return different results from different locations (particularly after nodes fail and recover), and global constraints (which require communicating with everyone) cannot be enforced.</p>
-<p>I haven&#39;t really mentioned the communication patterns during a read (rather than a write), because the pattern of reads really follows from the pattern of writes: during a read, you want to contact as few nodes as possible. We&#39;ll discuss this a bit more in the context of quorums.</p>
-<p>We&#39;ve only discussed two basic arrangements and none of the specific algorithms. Yet we&#39;ve been able to figure out quite a bit of about the possible communication patterns as well as their performance, durability guarantees and availability characteristics.</p>
-<h2 id="an-overview-of-major-replication-approaches">An overview of major replication approaches</h2>
-<p>Having discussed the two basic replication approaches: synchronous and asynchronous replication, let&#39;s have a look at the major replication algorithms.</p>
-<p>There are many, many different ways to categorize replication techniques. The second distinction (after sync vs. async) I&#39;d like to introduce is between:</p>
-<ul class="list">
-<li>Replication methods that prevent divergence (single copy systems) and</li>
-<li>Replication methods that risk divergence (multi-master systems)</li>
-</ul>
-<p>The first group of methods has the property that they &quot;behave like a single system&quot;. In particular, when partial failures occur, the system ensures that only a single copy of the system is active. Furthermore, the system ensures that the replicas are always in agreement. This is known as the consensus problem.</p>
-<p>Several processes (or computers) achieve consensus if they all agree on some value. More formally:</p>
-<ol class="list">
-<li>Agreement: Every correct process must agree on the same value.</li>
-<li>Integrity: Every correct process decides at most one value, and if it decides some value, then it must have been proposed by some process.</li>
-<li>Termination: All processes eventually reach a decision.</li>
-<li>Validity: If all correct processes propose the same value V, then all correct processes decide V.</li>
-</ol>
-<p>Mutual exclusion, leader election, multicast and atomic broadcast are all instances of the more general problem of consensus. Replicated systems that maintain single copy consistency need to solve the consensus problem in some way.</p>
-<p>The replication algorithms that maintain single-copy consistency include:</p>
-<ul class="list">
-<li>1n messages (asynchronous primary/backup)</li>
-<li>2n messages (synchronous primary/backup)</li>
-<li>4n messages (2-phase commit, Multi-Paxos)</li>
-<li>6n messages (3-phase commit, Paxos with repeated leader election)</li>
-</ul>
-<p>These algorithms vary in their fault tolerance (e.g. the types of faults they can tolerate). I&#39;ve classified these simply by the number of messages exchanged during an execution of the algorithm, because I think it is interesting to try to find an answer to the question &quot;what are we buying with the added message exchanges?&quot;</p>
-<p>The diagram below, adapted from Ryan Barret at <a href="http://www.google.com/events/io/2009/sessions/TransactionsAcrossDatacenters.html">Google</a>, describes some of the aspects of the different options:</p>
-<p class="img-container"><img src="images/google-transact09.png" alt="Comparison of replication methods, from http://www.google.com/events/io/2009/sessions/TransactionsAcrossDatacenters.html"></p>
-<p>The consistency, latency, throughput, data loss and failover characteristics in the diagram above can really be traced back to the two different replication methods: synchronous replication (e.g. waiting before responding) and asynchronous replication. When you wait, you get worse performance but stronger guarantees. The throughput difference between 2PC and quorum systems will become apparent when we discuss partition (and latency) tolerance.</p>
-<p>In that diagram, algorithms enforcing weak (/eventual) consistency are lumped up into one category (&quot;gossip&quot;). However, I will discuss replication methods for weak consistency - gossip and (partial) quorum systems - in more detail. The &quot;transactions&quot; row really refers more to global predicate evaluation, which is not supported in systems with weak consistency (though local predicate evaluation can be supported).</p>
-<p>It is worth noting that systems enforcing weak consistency requirements have fewer generic algorithms, and more techniques that can be selectively applied. Since systems that do not enforce single-copy consistency are free to act like distributed systems consisting of multiple nodes, there are fewer obvious objectives to fix and the focus is more on giving people a way to reason about the characteristics of the system that they have.</p>
-<p>For example:</p>
-<ul class="list">
-<li>Client-centric consistency models attempt to provide more intelligible consistency guarantees while allowing for divergence.</li>
-<li>CRDTs (convergent and commutative replicated datatypes) exploit semilattice properties (associativity, commutativity, idempotency) of certain state and operation-based data types.</li>
-<li>Confluence analysis (as in the Bloom language) uses information regarding the monotonicity of computations to maximally exploit disorder.</li>
-<li>PBS (probabilistically bounded staleness) uses simulation and information collected from a real world system to characterize the expected behavior of partial quorum systems.</li>
-</ul>
-<p>I&#39;ll talk about all of these a bit  further on, first; let&#39;s look at the replication algorithms that maintain single-copy consistency.</p>
-<h2 id="primary-backup-replication">Primary/backup replication</h2>
-<p>Primary/backup replication (also known as primary copy replication master-slave replication or log shipping) is perhaps the most commonly used replication method, and the most basic algorithm. All updated are performed on the primary, and a log of operations (or alternatively, changes) is shipped across the network to the backup replicas. There are two variants:</p>
-<ul class="list">
-<li>asynchronous primary/backup replication and</li>
-<li>synchronous primary/backup replication</li>
-</ul>
-<p>The synchronous version requires two messages (&quot;update&quot; + &quot;acknowledge receipt&quot;) while the asynchronous version could run with just one (&quot;update&quot;).</p>
-<p>P/B is very common. For example, by default MySQL replication uses the asynchronous variant. MongoDB also uses P/B (with some additional procedures for failover). All operations are performed on one master server, which serializes them to a local log, which is then replicated asynchronously to the backup servers.</p>
-<p>As we discussed earlier in the context of asynchronous replication, any asynchronous replication algorithm can only provide weak durability guarantees. In MySQL replication this manifests as replication lag: the asynchronous backups are always at least one operation behind the primary. If the primary fails, then the updates that have not yet been sent to the backups are lost.</p>
-<p>The synchronous variant of primary/backup replication ensures that writes have been stored on other nodes before returning back to the client - at the cost of waiting for responses from other replicas. However, it is worth noting that even this variant can only offer weak guarantees. Consider the following simple failure scenario:</p>
-<ul class="list">
-<li>the primary receives a write and sends it to the backup</li>
-<li>the backup persists and ACKs the write</li>
-<li>and then primary fails before sending ACK to the client</li>
-</ul>
-<p>The client now assumes that the commit failed, but the backup committed it; if the backup is promoted to primary, it will be incorrect. Manual cleanup may be needed to reconcile the failed primary or divergent backups.</p>
-<p>I am simplifying here of course. While all primary/backup replication algorithms follow the same general messaging pattern, they differ in their handling of failover, replicas being offline for extended periods and so on. However, it is not possible to be resilient to inopportune failures of the primary in this scheme.</p>
-<p>What is key in the log-shipping / primary/backup based schemes is that they can only offer a best-effort guarantee (e.g. they are susceptible to lost updates or incorrect updates if nodes fail at inopportune times). Furthermore, P/B schemes are susceptible to split-brain, where the failover to a backup kicks in due to a temporary network issue and causes both the primary and backup to be active at the same time.</p>
-<p>To prevent inopportune failures from causing consistency guarantees to be violated; we need to add another round of messaging, which gets us the two phase commit protocol (2PC).</p>
-<h2 id="two-phase-commit-2pc-">Two phase commit (2PC)</h2>
-<p><a href="http://en.wikipedia.org/wiki/Two-phase_commit_protocol">Two phase commit</a> (2PC) is a protocol used in many classic relational databases. For example, MySQL Cluster (not to be confused with the regular MySQL) provides synchronous replication using 2PC. The diagram below illustrates the message flow:</p>
-<pre>[ Coordinator ] -&gt; OK to commit?     [ Peers ]
-                &lt;- Yes / No
-
-[ Coordinator ] -&gt; Commit / Rollback [ Peers ]
-                &lt;- ACK</pre>
-<p>In the first phase (voting), the coordinator sends the update to all the participants. Each participant processes the update and votes whether to commit or abort. When voting to commit, the participants store the update onto a temporary area (the write-ahead log). Until the second phase completes, the update is considered temporary.</p>
-<p>In the second phase (decision), the coordinator decides the outcome and informs every participant about it. If all participants voted to commit, then the update is taken from the temporary area and made permanent.</p>
-<p>Having a second phase in place before the commit is considered permanent is useful, because it allows the system to roll back an update when a node fails. In contrast, in primary/backup (&quot;1PC&quot;), there is no step for rolling back an operation that has failed on some nodes and succeeded on others, and hence the replicas could diverge.</p>
-<p>2PC is prone to blocking, since a single node failure (participant or coordinator) blocks progress until the node has recovered. Recovery is often possible thanks to the second phase, during which other nodes are informed about the system state. Note that 2PC assumes that the data in stable storage at each node is never lost and that no node crashes forever. Data loss is still possible if the data in the stable storage is corrupted in a crash.</p>
-<p>The details of the recovery procedures during node failures are quite complicated so I won&#39;t get into the specifics. The major tasks are ensuring that writes to disk are durable (e.g. flushed to disk rather than cached) and making sure that the right recovery decisions are made (e.g. learning the outcome of the round and then redoing or undoing an update locally).</p>
-<p>As we learned in the chapter regarding CAP, 2PC is a CA - it is not partition tolerant. The failure model that 2PC addresses does not include network partitions; the prescribed way to recover from a node failure is to wait until the network partition heals. There is no safe way to promote a new coordinator if one fails; rather a manual intervention is required. 2PC is also fairly latency-sensitive, since it is a write N-of-N approach in which writes cannot proceed until the slowest node acknowledges them.</p>
-<p>2PC strikes a decent balance between performance and fault tolerance, which is why it has been popular in relational databases. However, newer systems often use a partition tolerant consensus algorithm, since such an algorithm can provide automatic recovery from temporary network partitions as well as more graceful handling of increased between-node latency.</p>
-<p>Let&#39;s look at partition tolerant consensus algorithms next.</p>
-<h2 id="partition-tolerant-consensus-algorithms">Partition tolerant consensus algorithms</h2>
-<p>Partition tolerant consensus algorithms are as far as we&#39;re going to go in terms of fault-tolerant algorithms that maintain single-copy consistency. There is a further class of fault tolerant algorithms: algorithms that tolerate <a href="http://en.wikipedia.org/wiki/Byzantine_fault_tolerance">arbitrary (Byzantine) faults</a>; these include nodes that fail by acting maliciously. Such algorithms are rarely used in commercial systems, because they are more expensive to run and more complicated to implement - and hence I will leave them out.</p>
-<p>When it comes to partition tolerant consensus algorithms, the most well-known algorithm is the Paxos algorithm. It is, however, notoriously difficult to implement and explain, so I will focus on Raft, a recent (~early 2013) algorithm designed to be easier to teach and implement. Let&#39;s first take a look at network partitions and the general characteristics of partition tolerant consensus algorithms.</p>
-<h3 id="what-is-a-network-partition-">What is a network partition?</h3>
-<p>A network partition is the failure of a network link to one or several nodes. The nodes themselves continue to stay active, and they may even be able to receive requests from clients on their side of the network partition. As we learned earlier - during the discussion of the CAP theorem - network partitions do occur and not all systems handle them gracefully.</p>
-<p>Network partitions are tricky because during a network partition, it is not possible to distinguish between a failed remote node and the node being unreachable. If a network partition occurs but no nodes fail, then the system is divided into two partitions which are simultaneously active. The two diagrams below illustrate how a network partition can look similar to a node failure.</p>
-<p>A system of 2 nodes, with a failure vs. a network partition:</p>
-<p class="img-container"><img src="images/system-of-2.png" alt="replication" style="max-height: 100px;"></p>
-<p>A system of 3 nodes, with a failure vs. a network partition:</p>
-<p class="img-container"><img src="images/system-of-3.png" alt="replication"  style="max-height: 130px;"></p>
-<p>A system that enforces single-copy consistency must have some method to break symmetry: otherwise, it will split into two separate systems, which can diverge from each other and can no longer maintain the illusion of a single copy.</p>
-<p>Network partition tolerance for systems that enforce single-copy consistency requires that during a network partition, only one partition of the system remains active since during a network partition it is not possible to prevent divergence (e.g. CAP theorem).</p>
-<h3 id="majority-decisions">Majority decisions</h3>
-<p>This is why partition tolerant consensus algorithms rely on a majority vote. Requiring a majority of nodes - rather than all of the nodes (as in 2PC) - to agree on updates allows a minority of the nodes to be down, or slow, or unreachable due to a network partition. As long as <code>(N/2 + 1)-of-N</code> nodes are up and accessible, the system can continue to operate.</p>
-<p>Partition tolerant consensus algorithms use an odd number of nodes (e.g. 3, 5 or 7). With just two nodes, it is not possible to have a clear majority after a failure. For example, if the number of nodes is three, then the system is resilient to one node failure; with five nodes the system is resilient to two node failures.</p>
-<p>When a network partition occurs, the partitions behave asymmetrically. One partition will contain the majority of the nodes. Minority partitions will stop processing operations to prevent divergence during a network partition, but the majority partition can remain active. This ensures that only a single copy of the system state remains active.</p>
-<p>Majorities are also useful because they can tolerate disagreement: if there is a perturbation or failure, the nodes may vote differently. However, since there can be only one majority decision, a temporary disagreement can at most block the protocol from proceeding (giving up liveness) but it cannot violate the single-copy consistency criterion (safety property).</p>
-<h3 id="roles">Roles</h3>
-<p>There are two ways one might structure a system: all nodes may have the same responsibilities, or nodes may have separate, distinct roles.</p>
-<p>Consensus algorithms for replication generally opt for having distinct roles for each node. Having a single fixed leader or master server is an optimization that makes the system more efficient, since we know that all updates must pass through that server. Nodes that are not the leader just need to forward their requests to the leader.</p>
-<p>Note that having distinct roles does not preclude the system from recovering from the failure of the leader (or any other role). Just because roles are fixed during normal operation doesn&#39;t mean that one cannot recover from failure by reassigning the roles after a failure (e.g. via a leader election phase). Nodes can reuse the result of a leader election until node failures and/or network partitions occur.</p>
-<p>Both Paxos and Raft make use of distinct node roles. In particular, they have a leader node (&quot;proposer&quot; in Paxos) that is responsible for coordination during normal operation. During normal operation, the rest of the nodes are followers (&quot;acceptors&quot; or &quot;voters&quot; in Paxos).</p>
-<h3 id="epochs">Epochs</h3>
-<p>Each period of normal operation in both Paxos and Raft is called an epoch (&quot;term&quot; in Raft). During each epoch only one node is the designated leader (a similar system is <a href="http://en.wikipedia.org/wiki/Japanese_era_name">used in Japan</a> where era names change upon imperial succession).</p>
-<p class="img-container"><img src="images/epoch.png" alt="replication"  style="max-height: 130px;"></p>
-<p>After a successful election, the same leader coordinates until the end of the epoch. As shown in the diagram above (from the Raft paper), some elections may fail, causing the epoch to end immediately.</p>
-<p>Epochs act as a logical clock, allowing other nodes to identify when an outdated node starts communicating - nodes that were partitioned or out of operation will have a smaller epoch number than the current one, and their commands are ignored.</p>
-<h3 id="leader-changes-via-duels">Leader changes via duels</h3>
-<p>During normal operation, a partition-tolerant consensus algorithm is rather simple. As we&#39;ve seen earlier, if we didn&#39;t care about fault tolerance, we could just use 2PC. Most of the complexity really arises from ensuring that once a consensus decision has been made, it will not be lost and the protocol can handle leader changes as a result of a network or node failure.</p>
-<p>All nodes start as followers; one node is elected to be a leader at the start. During normal operation, the leader maintains a heartbeat which allows the followers to detect if the leader fails or becomes partitioned.</p>
-<p>When a node detects that a leader has become non-responsive (or, in the initial case, that no leader exists), it switches to an intermediate state (called &quot;candidate&quot; in Raft) where it increments the term/epoch value by one, initiates a leader election and competes to become the new leader.</p>
-<p>In order to be elected a leader, a node must receive a majority of the votes. One way to assign votes is to simply assign them on a first-come-first-served basis; this way, a leader will eventually be elected. Adding a random amount of waiting time between attempts at getting elected will reduce the number of nodes that are simultaneously attempting to get elected.</p>
-<h3 id="numbered-proposals-within-an-epoch">Numbered proposals within an epoch</h3>
-<p>During each epoch, the leader proposes one value at a time to be voted upon. Within each epoch, each proposal is numbered with a unique strictly increasing number. The followers (voters / acceptors) accept the first proposal they receive for a particular proposal number.</p>
-<h3 id="normal-operation">Normal operation</h3>
-<p>During normal operation, all proposals go through the leader node. When a client submits a proposal (e.g. an update operation), the leader contacts all nodes in the quorum. If no competing proposals exist (based on the responses from the followers), the leader proposes the value. If a majority of the followers accept the value, then the value is considered to be accepted.</p>
-<p>Since it is possible that another node is also attempting to act as a leader, we need to ensure that once a single proposal has been accepted, its value can never change. Otherwise a proposal that has already been accepted might for example be reverted by a competing leader. Lamport states this as:</p>
-<blockquote>
-<p>P2: If a proposal with value <code>v</code> is chosen, then every higher-numbered proposal that is chosen has value <code>v</code>.</p>
-</blockquote>
-<p>Ensuring that this property holds requires that both followers and proposers are constrained by the algorithm from ever changing a value that has been accepted by a majority. Note that &quot;the value can never change&quot; refers to the value of a single execution (or run / instance / decision) of the protocol. A typical replication algorithm will run multiple executions of the algorithm, but most discussions of the algorithm focus on a single run to keep things simple. We want to prevent the decision history from being altered or overwritten.</p>
-<p>In order to enforce this property, the proposers must first ask the followers for their (highest numbered) accepted proposal and value. If the proposer finds out that a proposal already exists, then it must simply complete this execution of the protocol, rather than making its own proposal. Lamport states this as:</p>
-<blockquote>
-<p>P2b. If a proposal with value <code>v</code> is chosen, then every higher-numbered proposal issued by any proposer has value <code>v</code>.</p>
-</blockquote>
-<p>More specifically:</p>
-<blockquote>
-<p>P2c. For any <code>v</code> and <code>n</code>, if a proposal with value <code>v</code> and number <code>n</code> is issued [by a leader], then there is a set <code>S</code> consisting of a majority of acceptors [followers] such that either (a) no acceptor in <code>S</code> has accepted any proposal numbered less than <code>n</code>, or (b) <code>v</code> is the value of the highest-numbered proposal among all proposals numbered less than <code>n</code> accepted by the followers in <code>S</code>.</p>
-</blockquote>
-<p>This is the core of the Paxos algorithm, as well as algorithms derived from it. The value to be proposed is not chosen until the second phase of the protocol. Proposers must sometimes simply retransmit a previously made decision to ensure safety (e.g. clause b in P2c) until they reach a point where they know that they are free to impose their own proposal value (e.g. clause a).</p>
-<p>If multiple previous proposals exist, then the highest-numbered proposal value is proposed. Proposers may only attempt to impose their own value if there are no competing proposals at all.</p>
-<p>To ensure that no competing proposals emerge between the time the proposer asks each acceptor about its most recent value, the proposer asks the followers not to accept proposals with lower proposal numbers than the current one.</p>
-<p>Putting the pieces together, reaching a decision using Paxos requires two rounds of communication:</p>
-<pre>[ Proposer ] -&gt; Prepare(n)                                [ Followers ]
-             &lt;- Promise(n; previous proposal number
-                and previous value if accepted a
-                proposal in the past)
-
-[ Proposer ] -&gt; AcceptRequest(n, own value or the value   [ Followers ]
-                associated with the highest proposal number
-                reported by the followers)
-                &lt;- Accepted(n, value)</pre>
-<p>The prepare stage allows the proposer to learn of any competing or previous proposals. The second phase is where either a new value or a previously accepted value is proposed. In some cases - such as if two proposers are active at the same time (dueling); if messages are lost; or if a majority of the nodes have failed - then no proposal is accepted by a majority. But this is acceptable, since the decision rule for what value to propose converges towards a single value (the one with the highest proposal number in the previous attempt).</p>
-<p>Indeed, according to the FLP impossibility result, this is the best we can do: algorithms that solve the consensus problem must either give up safety or liveness when the guarantees regarding bounds on message delivery do not hold. Paxos gives up liveness: it may have to delay decisions indefinitely until a point in time where there are no competing leaders, and a majority of nodes accept a proposal. This is preferable to violating the safety guarantees.</p>
-<p>Of course, implementing this algorithm is much harder than it sounds. There are many small concerns which add up to a fairly significant amount of code even in the hands of experts. These are issues such as:</p>
-<ul class="list">
-<li>practical optimizations:<ul class="list">
-<li>avoiding repeated leader election via leadership leases (rather than heartbeats)</li>
-<li>avoiding repeated propose messages when in a stable state where the leader identity does not change</li>
-</ul>
-</li>
-<li>ensuring that followers and proposers do not lose items in stable storage and that results stored in stable storage are not subtly corrupted (e.g. disk corruption)</li>
-<li>enabling cluster membership to change in a safe manner (e.g. base Paxos depends on the fact that majorities always intersect in one node, which does not hold if the membership can change arbitrarily)</li>
-<li>procedures for bringing a new replica up to date in a safe and efficient manner after a crash, disk loss or when a new node is provisioned</li>
-<li>procedures for snapshotting and garbage collecting the data required to guarantee safety after some reasonable period (e.g. balancing storage requirements and fault tolerance requirements)</li>
-</ul>
-<p>Google&#39;s <a href="http://labs.google.com/papers/paxos_made_live.html">Paxos Made Live</a> paper details some of these challenges.</p>
-<h2 id="partition-tolerant-consensus-algorithms-paxos-raft-zab">Partition-tolerant consensus algorithms: Paxos, Raft, ZAB</h2>
-<p>Hopefully, this has given you a sense of how a partition-tolerant consensus algorithm works. I encourage you to read one of the papers in the further reading section to get a grasp of the specifics of the different algorithms.</p>
-<p><em>Paxos</em>. Paxos is one of the most important algorithms when writing strongly consistent partition tolerant replicated systems. It is used in many of Google&#39;s systems, including the <a href="http://research.google.com/archive/chubby.html">Chubby lock manager</a> used by <a href="http://research.google.com/archive/bigtable.html">BigTable</a>/<a href="http://research.google.com/pubs/pub36971.html">Megastore</a>, the Google File System as well as <a href="http://research.google.com/archive/spanner.html">Spanner</a>.</p>
-<p>Paxos is named after the Greek island of Paxos, and was originally presented by Leslie Lamport in a paper called &quot;The Part-Time Parliament&quot; in 1998. It is often considered to be difficult to implement, and there have been a series of papers from companies with considerable distributed systems expertise explaining further practical details (see the further reading). You might want to read Lamport&#39;s commentary on this issue <a href="http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html#lamport-paxos">here</a> and <a href="http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html#paxos-simple">here</a>.</p>
-<p>The issues mostly relate to the fact that Paxos is described in terms of a single round of consensus decision making, but an actual working implementation usually wants to run multiple rounds of consensus efficiently. This has led to the development of many <a href="http://en.wikipedia.org/wiki/Paxos_algorithm">extensions on the core protocol</a> that anyone interested in building a Paxos-based system still needs to digest. Furthermore, there are additional practical challenges such as how to facilitate cluster membership change.</p>
-<p><em>ZAB</em>. ZAB - the Zookeeper Atomic Broadcast protocol is used in Apache Zookeeper. Zookeeper is a system which provides coordination primitives for distributed systems, and is used by many Hadoop-centric distributed systems for coordination (e.g. <a href="http://hbase.apache.org/">HBase</a>, <a href="http://storm-project.net/">Storm</a>, <a href="http://kafka.apache.org/">Kafka</a>). Zookeeper is basically the open source community&#39;s version of Chubby. Technically speaking atomic broadcast is a problem different from pure consensus, but it still falls under the category of partition tolerant algorithms that ensure strong consistency.</p>
-<p><em>Raft</em>. Raft is a recent (2013) addition to this family of algorithms. It is designed to be easier to teach than Paxos, while providing the same guarantees. In particular, the different parts of the algorithm are more clearly separated and the paper also describes a mechanism for cluster membership change. It has recently seen adoption in <a href="https://github.com/coreos/etcd">etcd</a> inspired by ZooKeeper.</p>
-<h2 id="replication-methods-with-strong-consistency">Replication methods with strong consistency</h2>
-<p>In this chapter, we took a look at replication methods that enforce strong consistency. Starting with a contrast between synchronous work and asynchronous work, we worked our way up to algorithms that are tolerant of increasingly complex failures. Here are some of the key characteristics of each of the algorithms:</p>
-<h4 id="primary-backup">Primary/Backup</h4>
-<ul class="list">
-<li>Single, static master</li>
-<li>Replicated log, slaves are not involved in executing operations</li>
-<li>No bounds on replication delay</li>
-<li>Not partition tolerant</li>
-<li>Manual/ad-hoc failover, not fault tolerant, &quot;hot backup&quot;</li>
-</ul>
-<h4 id="2pc">2PC</h4>
-<ul class="list">
-<li>Unanimous vote: commit or abort</li>
-<li>Static master</li>
-<li>2PC cannot survive simultaneous failure of the coordinator and a node during a commit</li>
-<li>Not partition tolerant, tail latency sensitive</li>
-</ul>
-<h4 id="paxos">Paxos</h4>
-<ul class="list">
-<li>Majority vote</li>
-<li>Dynamic master</li>
-<li>Robust to n/2-1 simultaneous failures as part of protocol</li>
-<li>Less sensitive to tail latency</li>
-</ul>
-<hr>
-<h2 id="further-reading">Further reading</h2>
-<h4 id="primary-backup-and-2pc">Primary-backup and 2PC</h4>
-<ul class="list">
-<li><a href="http://scholar.google.com/scholar?q=Replication+techniques+for+availability">Replication techniques for availability</a> - Robbert van Renesse &amp; Rachid Guerraoui, 2010</li>
-<li><a href="http://research.microsoft.com/en-us/people/philbe/ccontrol.aspx">Concurrency Control and Recovery in Database Systems</a></li>
-</ul>
-<h4 id="paxos">Paxos</h4>
-<ul class="list">
-<li><a href="http://research.microsoft.com/users/lamport/pubs/lamport-paxos.pdf">The Part-Time Parliament</a> - Leslie Lamport</li>
-<li><a href="http://research.microsoft.com/users/lamport/pubs/paxos-simple.pdf">Paxos Made Simple</a> - Leslie Lamport, 2001</li>
-<li><a href="http://research.google.com/archive/paxos_made_live.html">Paxos Made Live - An Engineering Perspective</a> - Chandra et al</li>
-<li><a href="http://scholar.google.com/scholar?q=Paxos+Made+Practical">Paxos Made Practical</a> - Mazieres, 2007</li>
-<li><a href="http://groups.csail.mit.edu/tds/paxos.html">Revisiting the Paxos Algorithm</a> - Lynch et al</li>
-<li><a href="http://research.microsoft.com/lampson/58-Consensus/Acrobat.pdf">How to build a highly available system with consensus</a> - Butler Lampson</li>
-<li><a href="http://research.microsoft.com/en-us/um/people/lamport/pubs/reconfiguration-tutorial.pdf">Reconfiguring a State Machine</a> - Lamport et al - changing cluster membership</li>
-<li><a href="http://citeseer.ist.psu.edu/viewdoc/summary?doi=10.1.1.20.4762">Implementing Fault-Tolerant Services Using the State Machine Approach: a Tutorial</a> - Fred Schneider</li>
-</ul>
-<h4 id="raft-and-zab">Raft and ZAB</h4>
-<ul class="list">
-<li><a href="https://ramcloud.stanford.edu/wiki/download/attachments/11370504/raft.pdf">In Search of an Understandable Consensus Algorithm</a>, Diego Ongaro, John Ousterhout, 2013</li>
-<li><a href="http://www.youtube.com/watch?v=YbZ3zDzDnrw">Raft Lecture - User Study</a></li>
-<li><a href="http://research.yahoo.com/pub/3274">A simple totally ordered broadcast protocol</a> - Junqueira, Reed</li>
-<li><a href="http://research.yahoo.com/pub/3514">ZooKeeper Atomic Broadcast</a></li>
-</ul>
-<div style="page-break-after: always;"></div><a name="eventual"></a><h1 id="-chapter_number-replication-weak-consistency-model-protocols">6. Replication: weak consistency model protocols</h1>
+<div style="page-break-after: always;"></div><a name="eventual"></a><h1 id="-chapter_number-replication-weak-consistency-model-protocols">5. Replication: weak consistency model protocols</h1>
 <p>Now that we&#39;ve taken a look at protocols that can enforce single-copy consistency under an increasingly realistic set of supported failure cases, let&#39;s turn our attention at the world of options that opens up once we let go of the requirement of single-copy consistency.</p>
 <p>By and large, it is hard to come up with a single dimension that defines or characterizes the protocols that allow for replicas to diverge. Most such protocols are highly available, and the key issue is more whether or not the end users find the guarantees, abstractions and APIs useful for their purpose in spite of the fact that the replicas may diverge when node and/or network failures occur.</p>
 <p>Why haven&#39;t weakly consistent systems been more popular?</p>
@@ -1235,7 +995,7 @@ VectorClock.prototype.merge = function(other) {
 <li>that independent things fail independently</li>
 </ul>
 <p>The implication that follows from the limitation on the speed at which information travels is that nodes experience the world in different, unique ways. Computation on a single node is easy, because everything happens in a predictable global total order. Computation on a distributed system is difficult, because there is no global total order.</p>
-<p>For the longest while (e.g. decades of research), we&#39;ve solved this problem by introducing a global total order. I&#39;ve discussed the many methods for achieving strong consistency by creating order (in a fault-tolerant manner) where there is no naturally occurring total order.</p>
+<p>For the longest while (i.e. decades of research), we&#39;ve solved this problem by introducing a global total order. I&#39;ve discussed the many methods for achieving strong consistency by creating order (in a fault-tolerant manner) where there is no naturally occurring total order.</p>
 <p>Of course, the problem is that enforcing order is expensive. This breaks down in particular with large scale internet systems, where a system needs to remain available. A system enforcing strong consistency doesn&#39;t behave like a distributed system: it behaves like a single system, which is bad for availability during a partition.</p>
 <p>Furthermore, for each operation, often a majority of the nodes must be contacted - and often not just once, but twice (as you saw in the discussion on 2PC). This is particularly painful in systems that need to be geographically distributed to provide adequate performance for a global user base.</p>
 <p>So behaving like a single system by default is perhaps not desirable.</p>
@@ -1243,12 +1003,12 @@ VectorClock.prototype.merge = function(other) {
 <p>Eventual consistency expresses this idea: that nodes can for some time diverge from each other, but that eventually they will agree on the value.</p>
 <p>Within the set of systems providing eventual consistency, there are two types of system designs:</p>
 <p><em>Eventual consistency with probabilistic guarantees</em>. This type of system can detect conflicting writes at some later point, but does not guarantee that the results are equivalent to some correct sequential execution. In other words, conflicting updates will sometimes result in overwriting a newer value with an older one and some anomalies can be expected to occur during normal operation (or during partitions).</p>
-<p>In recent years, the most influential system design offering single-copy consistency is Amazon&#39;s Dynamo, which I will discuss as an example of a system that offers eventual consistency with probabilistic guarantees.</p>
-<p><em>Eventual consistency with strong guarantees</em>. This type of system guarantees that the results converge to a common value equivalent to some correct sequential execution. In other words, such systems do not produce in anomalous results; without any coordination you can build replicas of the same service, and those replicas can communicate in any pattern and receive the updates in any order, and they will eventually agree on the end result as long as they all see the same information.</p>
+<p>In recent years, the most influential system design is Amazon&#39;s Dynamo, which I will discuss as an example of a system that offers eventual consistency with probabilistic guarantees.</p>
+<p><em>Eventual consistency with strong guarantees</em>. This type of system guarantees that the results converge to a common value equivalent to some correct sequential execution. In other words, such systems do not produce any anomalous results; without any coordination you can build replicas of the same service, and those replicas can communicate in any pattern and receive the updates in any order, and they will eventually agree on the end result as long as they all see the same information.</p>
 <p>CRDT&#39;s (convergent replicated data types) are data types that guarantee convergence to the same value in spite of network delays, partitions and message reordering. They are provably convergent, but the data types that can be implemented as CRDT&#39;s are limited.</p>
 <p>The CALM (consistency as logical monotonicity) conjecture is an alternative expression of the same principle: it equates logical monotonicity with convergence. If we can conclude that something is logically monotonic, then it is also safe to run without coordination. Confluence analysis - in particular, as applied for the Bloom programming language - can be used to guide programmer decisions about when and where to use the coordination techniques from strongly consistent systems and when it is safe to execute without coordination.</p>
 <h2 id="reconciling-different-operation-orders">Reconciling different operation orders</h2>
-<p>What does a system that does not enforce single-copy consistency look like?  Let&#39;s try to make this more concrete by looking a few examples.</p>
+<p>What does a system that does not enforce single-copy consistency look like?  Let&#39;s try to make this more concrete by looking at a few examples.</p>
 <p>Perhaps the most obvious characteristic of systems that do not enforce single-copy consistency is that they allow replicas to diverge from each other. This means that there is no strictly defined pattern of communication: replicas can be separated from each other and yet continue to be available and accept writes.</p>
 <p>Let&#39;s imagine a system of three replicas, each of which is partitioned from the others. For example, the replicas might be in different datacenters and for some reason unable to communicate. Each replica remains available during the partition, accepting both reads and writes from some set of clients:</p>
 <pre>[Clients]   - &gt; [A]
@@ -1266,7 +1026,7 @@ VectorClock.prototype.merge = function(other) {
 [B] /     |
           |
 [C] ----[merge]---&gt; result</pre>
-<p>Another way to think about systems with weak consistency guarantees is to imagine a set of clients sending messages to two in some order. Because there is no coordination protocol that enforces a single total order, the messages can get delivered in different orders at the two replicas:</p>
+<p>Another way to think about systems with weak consistency guarantees is to imagine a set of clients sending messages to two replicas in some order. Because there is no coordination protocol that enforces a single total order, the messages can get delivered in different orders at the two replicas:</p>
 <pre>[Clients]  --&gt; [A]  1, 2, 3
 [Clients]  --&gt; [B]  2, 3, 1</pre>
 <p>This is, in essence, the reason why we need coordination protocols. For example, assume that we are trying to concatenate a string and the operations in messages 1, 2 and 3 are:</p>
@@ -1280,7 +1040,7 @@ B: concat(concat(concat(&#39;&#39;, &#39;World&#39;), &#39;!&#39;), &#39;Hello &
 <p>Keeping these two examples in mind, let&#39;s look at Amazon&#39;s Dynamo first to establish a baseline, and then discuss a number of novel approaches to building systems with weak consistency guarantees, such as CRDT&#39;s and the CALM theorem.</p>
 <h2 id="amazon-s-dynamo">Amazon&#39;s Dynamo</h2>
 <p>Amazon&#39;s Dynamo system design (2007) is probably the best-known system that offers weak consistency guarantees but high availability. It is the basis for many other real world systems, including LinkedIn&#39;s Voldemort, Facebook&#39;s Cassandra and Basho&#39;s Riak.</p>
-<p>Dynamo is an eventually consistent, highly available key-value store. A key value store is like a large hash table: a client can set values via <code>set(key, value)</code> and retrieve them by key using <code>get(key)</code>. A Dynamo cluster consists of N peer nodes; each node has a set of keys which is it responsible for storing.</p>
+<p>Dynamo is an eventually consistent, highly available key-value store. A key value store is like a large hash table: a client can set values via <code>set(key, value)</code> and retrieve them by key using <code>get(key)</code>. A Dynamo cluster consists of N peer nodes; each node has a set of keys which it is responsible for storing.</p>
 <p>Dynamo prioritizes availability over consistency; it does not guarantee single-copy consistency. Instead, replicas may diverge from each other when values are written; when a key is read, there is a read reconciliation phase that attempts to reconcile differences between replicas before returning the value back to the client.</p>
 <p>For many features on Amazon, it is more important to avoid outages than it is to ensure that data is perfectly consistent, as an outage can lead to lost business and a loss of credibility. Furthermore, if the data is not particularly important, then a weakly consistent system can provide better performance and higher availability at a lower cost than a traditional RDBMS.</p>
 <p>Since Dynamo is a complete system design, there are many different parts to look at beyond the core replication task. The diagram below illustrates some of the tasks; notably, how a write is routed to a node and written to multiple replicas.</p>
@@ -1341,7 +1101,7 @@ B: concat(concat(concat(&#39;&#39;, &#39;World&#39;), &#39;!&#39;), &#39;Hello &
   [...] [R]  [R + W]   [W]    [...]</pre>
 <p>This guarantees that a previous write will be seen by a subsequent read. However, this only holds if the nodes in N never change. Hence, Dynamo doesn&#39;t qualify, because in Dynamo the cluster membership can change if nodes fail.</p>
 <p>Dynamo is designed to be always writable. It has a mechanism which handles node failures by adding a different, unrelated server into the set of nodes responsible for certain keys when the original server is down. This means that the quorums are no longer guaranteed to always overlap. Even <code>R = W = N</code> would not qualify, since while the quorum sizes are equal to N, the nodes in those quorums can change during a failure. Concretely, during a partition, if a sufficient number of nodes cannot be reached, Dynamo will add new nodes to the quorum from unrelated but accessible nodes.</p>
-<p>Furthermore, Dynamo doesn&#39;t handle partitions in the manner that a system enforcing a strong consistency model would: namely, writes are allowed on both sides of a partition, which means that for at least some time the system does not act as a single copy. So calling <code>R + W &gt; N</code> &quot;strongly consistent&quot; is misleading; the guarantees merely probabilistic - which is not what strong consistency refers to.</p>
+<p>Furthermore, Dynamo doesn&#39;t handle partitions in the manner that a system enforcing a strong consistency model would: namely, writes are allowed on both sides of a partition, which means that for at least some time the system does not act as a single copy. So calling <code>R + W &gt; N</code> &quot;strongly consistent&quot; is misleading; the guarantee is merely probabilistic - which is not what strong consistency refers to.</p>
 <h3 id="conflict-detection-and-read-repair">Conflict detection and read repair</h3>
 <p>Systems that allow replicas to diverge must have a way to eventually reconcile two different values. As briefly mentioned during the partial quorum approach, one way to do this is to detect conflicts at read time, and then apply some conflict resolution method. But how is this done?</p>
 <p>In general, this is done by tracking the causal history of a piece of data by supplementing it with some metadata. Clients must keep the metadata information when they read data from the system, and must return back the metadata value when writing to the database.</p>
@@ -1359,7 +1119,7 @@ B: concat(concat(concat(&#39;&#39;, &#39;World&#39;), &#39;!&#39;), &#39;Hello &
 <p>Replica synchronization is used to bring nodes up to date after a failure, and for periodically synchronizing replicas with each other.</p>
 <p>Gossip is a probabilistic technique for synchronizing replicas. The pattern of communication (e.g. which node contacts which node) is not determined in advance. Instead, nodes have some probability <code>p</code> of attempting to synchronize with each other. Every <code>t</code> seconds, each node picks a node to communicate with. This provides an additional mechanism beyond the synchronous task (e.g. the partial quorum writes) which brings the replicas up to date.</p>
 <p>Gossip is scalable, and has no single point of failure, but can only provide probabilistic guarantees.</p>
-<p>In order to make the information exchange during replica synchronization efficient, Dynamo uses a technique called Merkle trees, which I will not cover in detail. The key idea is that a data store can be hashed at multiple different level of granularity: a hash representing the whole content, half the keys, a quarter of the keys and so on.</p>
+<p>In order to make the information exchange during replica synchronization efficient, Dynamo uses a technique called Merkle trees, which I will not cover in detail. The key idea is that a data store can be hashed at multiple different levels of granularity: a hash representing the whole content, half the keys, a quarter of the keys and so on.</p>
 <p>By maintaining this fairly granular hashing, nodes can compare their data store content much more efficiently than a naive technique. Once the nodes have identified which keys have different values, they exchange the necessary information to bring the replicas up to date.</p>
 <h3 id="dynamo-in-practice-probabilistically-bounded-staleness-pbs-">Dynamo in practice: probabilistically bounded staleness (PBS)</h3>
 <p>And that pretty much covers the Dynamo system design:</p>
@@ -1470,7 +1230,7 @@ B: max(max(max(0, 5), 7), 3) = 7</pre>
 <p>Most standard logical frameworks are monotonic: any inferences made within a framework such as first-order logic, once deductively valid, cannot be invalidated by new information. A non-monotonic logic is a system in which that property does not hold - in other words, if some conclusions can be invalidated by learning new knowledge.</p>
 <p>Within the artificial intelligence community, non-monotonic logics are associated with <a href="http://plato.stanford.edu/entries/reasoning-defeasible/">defeasible reasoning</a> - reasoning, in which assertions made utilizing partial information can be invalidated by new knowledge. For example, if we learn that Tweety is a bird, we&#39;ll assume that Tweety can fly; but if we later learn that Tweety is a penguin, then we&#39;ll have to revise our conclusion.</p>
 <p>Monotonicity concerns the relationship between premises (or facts about the world) and conclusions (or assertions about the world). Within a monotonic logic, we know that our results are retraction-free: <a href="http://en.wikipedia.org/wiki/Monotonicity_of_entailment">monotone</a> computations do not need to be recomputed or coordinated; the answer gets more accurate over time. Once we know that Tweety is a bird (and that we&#39;re reasoning using monotonic logic), we can safely conclude that Tweety can fly and that nothing we learn can invalidate that conclusion.</p>
-<p>While any computation that produces a human-facing result can be interpreted as an assertion about the world (e.g. the value of &quot;foo&quot; is &quot;bar&quot;), determining whether a computation in a von Neumann -machine based programming model is monotonic difficult because it is not exactly clear what the relationship between facts and assertions are and whether those relationships are monotonic.</p>
+<p>While any computation that produces a human-facing result can be interpreted as an assertion about the world (e.g. the value of &quot;foo&quot; is &quot;bar&quot;), it is difficult to determine whether a computation in a von Neumann machine based programming model is monotonic, because it is not exactly clear what the relationship between facts and assertions are and whether those relationships are monotonic.</p>
 <p>However, there are a number of programming models for which determining monotonicity is possible. In particular, <a href="http://en.wikipedia.org/wiki/Relational_algebra">relational algebra</a> (e.g. the theoretical underpinnings of SQL) and <a href="http://en.wikipedia.org/wiki/Datalog">Datalog</a> provide highly expressive languages that have well-understood interpretations.</p>
 <p>Both basic Datalog and relational algebra (even with recursion) are known to be monotonic. More specifically, computations expressed using a certain set of basic operators are known to be monotonic (selection, projection, natural join, cross product, union and recursive Datalog without negation), and non-monotonicity is introduced by using more advanced operators (negation, set difference, division, universal quantification, aggregation).</p>
 <p>This means that computations expressed using a significant number of operators (e.g. map, filter, join, union, intersection) in those systems are logically monotonic; any computations using those operators are also monotonic and thus safe to run without coordination. Expressions that make use of negation and aggregation, on the other hand, are not safe to run without coordination.</p>
@@ -1484,7 +1244,7 @@ B: max(max(max(0, 5), 7), 3) = 7</pre>
 </blockquote>
 <p>If, then we can express our computation in a manner in which it is possible to test for monotonicity, then we can perform a whole-program static analysis that detects which parts of the program are eventually consistent and safe to run without coordination (the monotonic parts) - and which parts are not (the non-monotonic ones).</p>
 <p>Note that this requires a different kind of language, since these inferences are hard to make for traditional programming languages where sequence, selection and iteration are at the core. Which is why the Bloom language was designed.</p>
-<h2 id="what-is-non-mononicity-good-for-">What is non-mononicity good for?</h2>
+<h2 id="what-is-non-monotonicity-good-for-">What is non-monotonicity good for?</h2>
 <p>The difference between monotonicity and non-monotonicity is interesting. For example, adding two numbers is monotonic, but calculating an aggregation over two nodes containing numbers is not. What&#39;s the difference? One of these is a computation (adding two numbers), while the other is an assertion (calculating an aggregate).</p>
 <p>How does a computation differ from an assertion? Let&#39;s consider the query &quot;is pizza a vegetable?&quot;. To answer that, we need to get at the core: when is it acceptable to infer that something is (or is not) true?</p>
 <p>There are several acceptable answers, each corresponding to a different set of assumptions regarding the information that we have and the way we ought to act upon it - and we&#39;ve come to accept different answers in different contexts.</p>
@@ -1547,7 +1307,7 @@ or P(false)</pre>
 <li><a href="https://queue.acm.org/detail.cfm?id=2462076">Eventual Consistency Today: Limitations, Extensions, and Beyond</a> - Bailis &amp; Ghodsi, 2013</li>
 <li><a href="http://www.ysaito.com/survey.pdf">Optimistic replication</a> - Saito &amp; Shapiro, 2005</li>
 </ul>
-<div style="page-break-after: always;"></div><a name="appendix"></a><h1 id="-chapter_number-further-reading-and-appendix">7. Further reading and appendix</h1>
+<div style="page-break-after: always;"></div><a name="appendix"></a><h1 id="-chapter_number-further-reading-and-appendix">6. Further reading and appendix</h1>
 <p>If you&#39;ve made it this far, thank you.</p>
 <p>If you liked the book, follow me on <a href="https://github.com/mixu/">Github</a> (or <a href="http://twitter.com/mikitotakada">Twitter</a>). I love seeing that I&#39;ve had some kind of positive impact. &quot;Create more value than you capture&quot; and all that.</p>
 <p>Many many thanks to: logpath, alexras, globalcitizen, graue, frankshearar, roryokane, jpfuentes2, eeror, cmeiklejohn, stevenproctor eos2102 and steveloughran for their help! Of course, any mistakes and omissions that remain are my fault!</p>
@@ -1587,7 +1347,7 @@ or P(false)</pre>
 <li><a href="http://scholar.google.com/scholar?q=Dynamo%3A+Amazon&#39;s+Highly+Available+Key-value+Store">Dynamo: Amazon’s Highly Available Key-value Store</a> - DeCandia et al.</li>
 <li><a href="http://research.google.com/archive/bigtable.html">Bigtable: A Distributed Storage System for Structured Data</a> - Chang et al.</li>
 <li><a href="http://research.google.com/archive/chubby.html">The Chubby Lock Service for Loosely-Coupled Distributed Systems</a> - Burrows</li>
-<li><a href="http://research.yahoo.com/pub/3280">ZooKeeper: Wait-free coordination for Internet-scale systems</a></li>
+<li><a href="http://www.usenix.org/event/usenix10/tech/full_papers/Hunt.pdf">ZooKeeper: Wait-free coordination for Internet-scale systems</a> - Hunt, Konar, Junqueira, Reed, 2010</li>
 </ul>
 
         </div>
