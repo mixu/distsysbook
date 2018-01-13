@@ -6,7 +6,7 @@
     "name": "Mikito Takada",
     "email": "mixu@mixu.net",
     "url": "http://blog.mixu.net/"
-    },
+  },
   "main": "bookgen/generate.js",
   "dependencies": {
     "marked": "~0.2.5"
@@ -16,4 +16,3 @@
     "start": "node bookgen/generate.js"
   }
 }
-

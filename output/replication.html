@@ -133,7 +133,7 @@
 </ul>
 <p>I&#39;ll talk about all of these a bit  further on, first; let&#39;s look at the replication algorithms that maintain single-copy consistency.</p>
 <h2 id="primary-backup-replication">Primary/backup replication</h2>
-<p>Primary/backup replication (also known as primary copy replication master-slave replication or log shipping) is perhaps the most commonly used replication method, and the most basic algorithm. All updated are performed on the primary, and a log of operations (or alternatively, changes) is shipped across the network to the backup replicas. There are two variants:</p>
+<p>Primary/backup replication (also known as primary copy replication master-slave replication or log shipping) is perhaps the most commonly used replication method, and the most basic algorithm. All updates are performed on the primary, and a log of operations (or alternatively, changes) is shipped across the network to the backup replicas. There are two variants:</p>
 <ul class="list">
 <li>asynchronous primary/backup replication and</li>
 <li>synchronous primary/backup replication</li>
@@ -242,7 +242,7 @@
 <li>procedures for bringing a new replica up to date in a safe and efficient manner after a crash, disk loss or when a new node is provisioned</li>
 <li>procedures for snapshotting and garbage collecting the data required to guarantee safety after some reasonable period (e.g. balancing storage requirements and fault tolerance requirements)</li>
 </ul>
-<p>Google&#39;s <a href="http://labs.google.com/papers/paxos_made_live.html">Paxos Made Live</a> paper details some of these challenges.</p>
+<p>Google&#39;s <a href="http://research.google.com/archive/paxos_made_live.html">Paxos Made Live</a> paper details some of these challenges.</p>
 <h2 id="partition-tolerant-consensus-algorithms-paxos-raft-zab">Partition-tolerant consensus algorithms: Paxos, Raft, ZAB</h2>
 <p>Hopefully, this has given you a sense of how a partition-tolerant consensus algorithm works. I encourage you to read one of the papers in the further reading section to get a grasp of the specifics of the different algorithms.</p>
 <p><em>Paxos</em>. Paxos is one of the most important algorithms when writing strongly consistent partition tolerant replicated systems. It is used in many of Google&#39;s systems, including the <a href="http://research.google.com/archive/chubby.html">Chubby lock manager</a> used by <a href="http://research.google.com/archive/bigtable.html">BigTable</a>/<a href="http://research.google.com/pubs/pub36971.html">Megastore</a>, the Google File System as well as <a href="http://research.google.com/archive/spanner.html">Spanner</a>.</p>
@@ -296,8 +296,8 @@
 <ul class="list">
 <li><a href="https://ramcloud.stanford.edu/wiki/download/attachments/11370504/raft.pdf">In Search of an Understandable Consensus Algorithm</a>, Diego Ongaro, John Ousterhout, 2013</li>
 <li><a href="http://www.youtube.com/watch?v=YbZ3zDzDnrw">Raft Lecture - User Study</a></li>
-<li><a href="http://research.yahoo.com/pub/3274">A simple totally ordered broadcast protocol</a> - Junqueira, Reed</li>
-<li><a href="http://research.yahoo.com/pub/3514">ZooKeeper Atomic Broadcast</a></li>
+<li><a href="http://labs.yahoo.com/publication/a-simple-totally-ordered-broadcast-protocol/">A simple totally ordered broadcast protocol</a> - Junqueira, Reed, 2008</li>
+<li><a href="http://labs.yahoo.com/publication/zab-high-performance-broadcast-for-primary-backup-systems/">ZooKeeper Atomic Broadcast</a> - Reed, 2011</li>
 </ul>
 
         </div>
