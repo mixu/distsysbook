@@ -54,7 +54,7 @@ BookGen.processFiles = function(config, files) {
   }).join('<div style="page-break-after: always;"></div>');
 
   // write a single page version as well
-  fs.writeFile(config.output+'single-page.html',
+  fs.writeFileSync(config.output+'single-page.html',
     header.replace('assets/style.css', 'assets/printable.css')
       .replace(/{{prev}}/g, 'index.html')
       .replace(/{{next}}/g, 'index.html')
@@ -71,7 +71,7 @@ BookGen.processFiles = function(config, files) {
         .replace(/{{prev}}/g, 'index.html')
         .replace(/{{next}}/g, 'index.html')
     );
-  fs.writeFile(config.output+'ebook.html',
+  fs.writeFileSync(config.output+'ebook.html',
     header.replace(/<link[^>]+>/g, '')
           .replace(/{{prev}}/g, 'index.html')
           .replace(/{{next}}/g, 'index.html')
