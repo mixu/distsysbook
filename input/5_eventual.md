@@ -233,7 +233,7 @@ Based on the paper, during normal operation eventually consistent data stores ar
 
 ![from the PBS paper](./images/pbs.png)
 
-For example, going from `R=1`, `W=1` to `R=2`, `W=1` in the Yammer case reduces the inconsistency window from 1352 ms to 202 ms - while keeping the read latencies lower (32.6 ms) than the fastest strict quorum (`R=3`, `W=1`; 219.27 ms).
+For example, going from `R=1`, `W=1` to `R=2`, `W=1` in the Yammer case reduces the inconsistency window from 1364 ms to 202 ms - while keeping the read latencies lower (32.6 ms) than the fastest strict quorum (`R=3`, `W=1`; 219.27 ms).
 
 For more details, have a look at the [PBS website](http://pbs.cs.berkeley.edu/)  and the associated paper.
 
