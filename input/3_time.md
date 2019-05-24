@@ -2,6 +2,8 @@
 
 What is order and why is it important?
 
+
+
 What do you mean "what is order"?
 
 I mean, why are we so obsessed with order in the first place? Why do we care whether A happened before B? Why don't we care about some other property, like "color"?
@@ -161,21 +163,22 @@ Lamport clocks and vector clocks are replacements for physical clocks which rely
 
 Expressed as code:
 
-    function LamportClock() {
-      this.value = 1;
-    }
+<pre style="color:#000000;background:#ffffff;"><span style="color:#800000; font-weight:bold; ">function</span> LamportClock<span style="color:#808030; ">(</span><span style="color:#808030; ">)</span> <span style="color:#800080; ">{</span>
+  <span style="color:#800000; font-weight:bold; ">this</span><span style="color:#808030; ">.</span>value <span style="color:#808030; ">=</span> <span style="color:#008c00; ">1</span><span style="color:#800080; ">;</span>
+<span style="color:#800080; ">}</span>
 
-    LamportClock.prototype.get = function() {
-      return this.value;
-    }
+LamportClock<span style="color:#808030; ">.</span><span style="color:#797997; ">prototype</span><span style="color:#808030; ">.</span>get <span style="color:#808030; ">=</span> <span style="color:#800000; font-weight:bold; ">function</span> <span style="color:#808030; ">(</span><span style="color:#808030; ">)</span> <span style="color:#800080; ">{</span>
+  <span style="color:#800000; font-weight:bold; ">return</span> <span style="color:#800000; font-weight:bold; ">this</span><span style="color:#808030; ">.</span>value<span style="color:#800080; ">;</span>
+<span style="color:#800080; ">}</span>
 
-    LamportClock.prototype.increment = function() {
-      this.value++;
-    }
+LamportClock<span style="color:#808030; ">.</span><span style="color:#797997; ">prototype</span><span style="color:#808030; ">.</span>increment <span style="color:#808030; ">=</span> <span style="color:#800000; font-weight:bold; ">function</span> <span style="color:#808030; ">(</span><span style="color:#808030; ">)</span> <span style="color:#800080; ">{</span>
+  <span style="color:#800000; font-weight:bold; ">this</span><span style="color:#808030; ">.</span>value<span style="color:#808030; ">++</span><span style="color:#800080; ">;</span>
+<span style="color:#800080; ">}</span>
 
-    LamportClock.prototype.merge = function(other) {
-      this.value = Math.max(this.value, other.value) + 1;
-    }
+LamportClock<span style="color:#808030; ">.</span><span style="color:#797997; ">prototype</span><span style="color:#808030; ">.</span>merge <span style="color:#808030; ">=</span> <span style="color:#800000; font-weight:bold; ">function</span> <span style="color:#808030; ">(</span>other<span style="color:#808030; ">)</span> <span style="color:#800080; ">{</span>
+  <span style="color:#800000; font-weight:bold; ">this</span><span style="color:#808030; ">.</span>value <span style="color:#808030; ">=</span> <span style="color:#797997; ">Math</span><span style="color:#808030; ">.</span><span style="color:#800000; font-weight:bold; ">max</span><span style="color:#808030; ">(</span><span style="color:#800000; font-weight:bold; ">this</span><span style="color:#808030; ">.</span>value<span style="color:#808030; ">,</span> other<span style="color:#808030; ">.</span>value<span style="color:#808030; ">)</span> <span style="color:#808030; ">+</span> <span style="color:#008c00; ">1</span><span style="color:#800080; ">;</span>
+<span style="color:#800080; ">}</span>
+</pre>
 
 A [Lamport clock](http://en.wikipedia.org/wiki/Lamport_timestamps) allows counters to be compared across systems, with a caveat: Lamport clocks define a partial order. If `timestamp(a) < timestamp(b)`:
 
@@ -202,40 +205,43 @@ However - and this is still a useful property - from the perspective of a single
 
 Again, expressed as code:
 
-    function VectorClock(value) {
-      // expressed as a hash keyed by node id: e.g. { node1: 1, node2: 3 }
-      this.value = value || {};
-    }
+<pre style="color:#000000;background:#ffffff;"><span style="color:#800000; font-weight:bold; ">function</span> VectorClock<span style="color:#808030; ">(</span>value<span style="color:#808030; ">)</span> <span style="color:#800080; ">{</span>
+  <span style="color:#696969; ">// expressed as a hash keyed by node id: e.g. { node1: 1, node2: 3 }</span>
+  <span style="color:#800000; font-weight:bold; ">this</span><span style="color:#808030; ">.</span>value <span style="color:#808030; ">=</span> value <span style="color:#808030; ">||</span> <span style="color:#800080; ">{</span><span style="color:#800080; ">}</span><span style="color:#800080; ">;</span>
+<span style="color:#800080; ">}</span>
 
-    VectorClock.prototype.get = function() {
-      return this.value;
-    };
+VectorClock<span style="color:#808030; ">.</span><span style="color:#797997; ">prototype</span><span style="color:#808030; ">.</span>get <span style="color:#808030; ">=</span> <span style="color:#800000; font-weight:bold; ">function</span> <span style="color:#808030; ">(</span><span style="color:#808030; ">)</span> <span style="color:#800080; ">{</span>
+  <span style="color:#800000; font-weight:bold; ">return</span> <span style="color:#800000; font-weight:bold; ">this</span><span style="color:#808030; ">.</span>value<span style="color:#800080; ">;</span>
+<span style="color:#800080; ">}</span><span style="color:#800080; ">;</span>
 
-    VectorClock.prototype.increment = function(nodeId) {
-      if(typeof this.value[nodeId] == 'undefined') {
-        this.value[nodeId] = 1;
-      } else {
-        this.value[nodeId]++;
-      }
-    };
+VectorClock<span style="color:#808030; ">.</span><span style="color:#797997; ">prototype</span><span style="color:#808030; ">.</span>increment <span style="color:#808030; ">=</span> <span style="color:#800000; font-weight:bold; ">function</span> <span style="color:#808030; ">(</span>nodeId<span style="color:#808030; ">)</span> <span style="color:#800080; ">{</span>
+  <span style="color:#800000; font-weight:bold; ">if</span> <span style="color:#808030; ">(</span><span style="color:#800000; font-weight:bold; ">typeof</span> <span style="color:#800000; font-weight:bold; ">this</span><span style="color:#808030; ">.</span>value<span style="color:#808030; ">[</span>nodeId<span style="color:#808030; ">]</span> <span style="color:#808030; ">==</span> <span style="color:#800000; ">'</span><span style="color:#0000e6; ">undefined</span><span style="color:#800000; ">'</span><span style="color:#808030; ">)</span> <span style="color:#800080; ">{</span>
+    <span style="color:#800000; font-weight:bold; ">this</span><span style="color:#808030; ">.</span>value<span style="color:#808030; ">[</span>nodeId<span style="color:#808030; ">]</span> <span style="color:#808030; ">=</span> <span style="color:#008c00; ">1</span><span style="color:#800080; ">;</span>
+  <span style="color:#800080; ">}</span> <span style="color:#800000; font-weight:bold; ">else</span> <span style="color:#800080; ">{</span>
+    <span style="color:#800000; font-weight:bold; ">this</span><span style="color:#808030; ">.</span>value<span style="color:#808030; ">[</span>nodeId<span style="color:#808030; ">]</span><span style="color:#808030; ">++</span><span style="color:#800080; ">;</span>
+  <span style="color:#800080; ">}</span>
+<span style="color:#800080; ">}</span><span style="color:#800080; ">;</span>
 
-    VectorClock.prototype.merge = function(other) {
-      var result = {}, last,
-          a = this.value,
-          b = other.value;
-      // This filters out duplicate keys in the hash
-      (Object.keys(a)
-        .concat(b))
-        .sort()
-        .filter(function(key) {
-          var isDuplicate = (key == last);
-          last = key;
-          return !isDuplicate;
-        }).forEach(function(key) {
-          result[key] = Math.max(a[key] || 0, b[key] || 0);
-        });
-      this.value = result;
-    };
+VectorClock<span style="color:#808030; ">.</span><span style="color:#797997; ">prototype</span><span style="color:#808030; ">.</span>merge <span style="color:#808030; ">=</span> <span style="color:#800000; font-weight:bold; ">function</span> <span style="color:#808030; ">(</span>other<span style="color:#808030; ">)</span> <span style="color:#800080; ">{</span>
+  <span style="color:#800000; font-weight:bold; ">var</span> result <span style="color:#808030; ">=</span> <span style="color:#800080; ">{</span><span style="color:#800080; ">}</span><span style="color:#808030; ">,</span>
+    last<span style="color:#808030; ">,</span>
+    a <span style="color:#808030; ">=</span> <span style="color:#800000; font-weight:bold; ">this</span><span style="color:#808030; ">.</span>value<span style="color:#808030; ">,</span>
+    b <span style="color:#808030; ">=</span> other<span style="color:#808030; ">.</span>value<span style="color:#800080; ">;</span>
+  <span style="color:#696969; ">// This filters out duplicate keys in the hash</span>
+  <span style="color:#808030; ">(</span><span style="color:#797997; ">Object</span><span style="color:#808030; ">.</span><span style="color:#800000; font-weight:bold; ">keys</span><span style="color:#808030; ">(</span>a<span style="color:#808030; ">)</span>
+    <span style="color:#808030; ">.</span><span style="color:#800000; font-weight:bold; ">concat</span><span style="color:#808030; ">(</span>b<span style="color:#808030; ">)</span><span style="color:#808030; ">)</span>
+  <span style="color:#808030; ">.</span><span style="color:#800000; font-weight:bold; ">sort</span><span style="color:#808030; ">(</span><span style="color:#808030; ">)</span>
+    <span style="color:#808030; ">.</span><span style="color:#800000; font-weight:bold; ">filter</span><span style="color:#808030; ">(</span><span style="color:#800000; font-weight:bold; ">function</span> <span style="color:#808030; ">(</span>key<span style="color:#808030; ">)</span> <span style="color:#800080; ">{</span>
+      <span style="color:#800000; font-weight:bold; ">var</span> isDuplicate <span style="color:#808030; ">=</span> <span style="color:#808030; ">(</span>key <span style="color:#808030; ">==</span> last<span style="color:#808030; ">)</span><span style="color:#800080; ">;</span>
+      last <span style="color:#808030; ">=</span> key<span style="color:#800080; ">;</span>
+      <span style="color:#800000; font-weight:bold; ">return</span> <span style="color:#808030; ">!</span>isDuplicate<span style="color:#800080; ">;</span>
+    <span style="color:#800080; ">}</span><span style="color:#808030; ">)</span><span style="color:#808030; ">.</span><span style="color:#800000; font-weight:bold; ">forEach</span><span style="color:#808030; ">(</span><span style="color:#800000; font-weight:bold; ">function</span> <span style="color:#808030; ">(</span>key<span style="color:#808030; ">)</span> <span style="color:#800080; ">{</span>
+      result<span style="color:#808030; ">[</span>key<span style="color:#808030; ">]</span> <span style="color:#808030; ">=</span> <span style="color:#797997; ">Math</span><span style="color:#808030; ">.</span><span style="color:#800000; font-weight:bold; ">max</span><span style="color:#808030; ">(</span>a<span style="color:#808030; ">[</span>key<span style="color:#808030; ">]</span> <span style="color:#808030; ">||</span> <span style="color:#008c00; ">0</span><span style="color:#808030; ">,</span> b<span style="color:#808030; ">[</span>key<span style="color:#808030; ">]</span> <span style="color:#808030; ">||</span> <span style="color:#008c00; ">0</span><span style="color:#808030; ">)</span><span style="color:#800080; ">;</span>
+    <span style="color:#800080; ">}</span><span style="color:#808030; ">)</span><span style="color:#800080; ">;</span>
+  <span style="color:#800000; font-weight:bold; ">this</span><span style="color:#808030; ">.</span>value <span style="color:#808030; ">=</span> result<span style="color:#800080; ">;</span>
+<span style="color:#800080; ">}</span><span style="color:#800080; ">;</span>
+</pre>
+
 
 This illustration ([source](http://en.wikipedia.org/wiki/Vector_clock)) shows a vector clock:
 
