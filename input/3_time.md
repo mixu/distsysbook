@@ -225,7 +225,7 @@ Again, expressed as code:
           b = other.value;
       // This filters out duplicate keys in the hash
       (Object.keys(a)
-        .concat(b))
+        .concat(Object.keys(b)))
         .sort()
         .filter(function(key) {
           var isDuplicate = (key == last);
