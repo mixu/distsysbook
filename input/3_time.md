@@ -249,6 +249,24 @@ This illustration ([source](http://en.wikipedia.org/wiki/Vector_clock)) shows a 
 
 Each of the three nodes (A, B, C) keeps track of the vector clock. As events occur, they are timestamped with the current value of the vector clock. Examining a vector clock such as `{ A: 2, B: 4, C: 1 }` lets us accurately identify the messages that (potentially) influenced that event.
 
+The added value of a vector clock compared to a Lamport clock is that a vector clock allows for the detection of concurrent events. So how are we supposed to compare vector clocks? Equality is trivial, two vector clocks are the same if they have the same members. Moving on, we say that a vector clock `v1` is greater than a vector clock `v2` if at least one `v1[i]` is greater than `v2[i]` and all other `v1[j]` are greater or equal `v2[j]` for every `j != i`. 
+
+For example, `v2 = { A: 4, B: 5, C: 1 }` is greater than `v1 = { A: 2, B: 4, C: 1 }` because:
+  * `v2[1]` > `v1[1]`
+  * `v2[2]` > `v1[2]`
+  * `v2[3]` == `v1[3]`
+
+This means that `v1` happened before in time.
+
+We say that a vector clock `v1` can not be compared to a vector clock `v2` if at least one `v1[i]` is greater than `v2[i]` and some other `v1[j]` is less than `v2[j]` for every `j != i`. 
+
+For example, `v2 = { A: 4, B: 2, C: 1 }` is can not be compared to `v1 = { A: 2, B: 4, C: 1 }` because:
+
+  * `v2[1]` > `v1[1]`
+  * `v2[2]` < `v1[2]`
+
+This means that `v1` and `v2` are concurrent.
+
 The issue with vector clocks is mainly that they require one entry per node, which means that they can potentially become very large for large systems. A variety of techniques have been applied to reduce the size of vector clocks (either by performing periodic garbage collection, or by reducing accuracy by limiting the size).
 
 We've looked at how order and causality can be tracked without physical clocks. Now, let's look at how time durations can be used for cutoff.
