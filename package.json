@@ -9,7 +9,7 @@
   },
   "main": "bookgen/generate.js",
   "dependencies": {
-    "marked": "~0.2.5"
+    "marked": "~0.7.0"
   },
   "private": "true",
   "scripts": {
