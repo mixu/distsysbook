@@ -242,7 +242,7 @@ Replication is about providing extra bandwidth, and caching where it counts. It 
 
 Replication allows us to achieve scalability, performance and fault tolerance. Afraid of loss of availability or reduced performance? Replicate the data to avoid a bottleneck or single point of failure. Slow computation? Replicate the computation on multiple systems. Slow I/O? Replicate the data to a local cache to reduce latency or onto multiple machines to increase throughput.
 
-Replication is also the source of many of the problems, since there are now independent copies of the data that has to be kept in sync on multiple machines - this means ensuring that the replication follows a consistency model.
+Replication is also the source of many of the problems, since there are now independent copies of the data that have to be kept in sync on multiple machines - this means ensuring that the replication follows a consistency model.
 
 The choice of a consistency model is crucial: a good consistency model provides clean semantics for programmers (in other words, the properties it guarantees are easy to reason about) and meets business/design goals such as high availability or strong consistency.
 
